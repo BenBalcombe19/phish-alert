@@ -16,5 +16,9 @@
         "vue": "^2.6.14",
         "vue-loader": "^15.9.8",
         "vue-template-compiler": "^2.6.14"
+    },
+    "dependencies": {
+        "gmail-js": "^1.0.17",
+        "jquery": "^3.6.0"
     }
 }

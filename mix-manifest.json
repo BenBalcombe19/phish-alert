@@ -1,5 +1,7 @@
 {
-    "/dist/js/content.js": "/dist/js/content.js",
+    "/dist/js/extension.js": "/dist/js/extension.js",
+    "/dist/js/extensionInjector.js": "/dist/js/extensionInjector.js",
+    "/dist/js/gmailJSLoader.js": "/dist/js/gmailJSLoader.js",
     "/dist/js/background.js": "/dist/js/background.js",
     "/dist/js/popup.js": "/dist/js/popup.js",
     "/dist/css/popup.css": "/dist/css/popup.css"
