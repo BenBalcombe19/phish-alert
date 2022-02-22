@@ -16,8 +16,8 @@
 export default {
     data() {
         return {
-            active: true,
-            list: "example.com",
+            active: false,
+            list: [],
             // icons: {
             //     active: 'images/icon-48x48.png',
             //     inactive: 'images/icon-48x48-off.png'
@@ -45,6 +45,9 @@ export default {
                 toggleSitesList: this.list
             }, () => {});
         }
+    },
+    mounted(){
+        console.log("DOCUMENT:", document)
     }
 }
 </script>
