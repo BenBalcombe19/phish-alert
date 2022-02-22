@@ -1,17 +1,15 @@
 {
     "name": "Anti-Phishing Email Extension",
     "description": "An extension to aid email phishing detection",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "version": "1.0.0",
     "permissions": [
         "storage",
         "webRequest",
-        "webRequestBlocking",
-        "http://*/",
-        "https://*/"
+        "declarativeNetRequest"
     ],
     "background": {
-        "scripts" : ["js/background.js"]
+        "service_worker" : "js/background.js"
     },
     "content_scripts":[
         {
@@ -23,7 +21,19 @@
         }
     ],
 
-    "browser_action": {
+    "web_accessible_resources": [{
+        "resources": [
+            "js/gmailJsLoader.js",
+            "js/extension.js"
+        ],
+        "matches": ["<all_urls>"]
+    }],
+    "host_permissions": [
+        "http://*/",
+        "https://*/*"
+    ],
+
+    "action": {
         "default_popup": "Popup.html"
     }
 }

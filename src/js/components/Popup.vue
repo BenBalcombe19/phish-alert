@@ -39,6 +39,7 @@ export default {
             // chrome.browserAction.setIcon({
             //     path: this.icons[active ? 'active' : 'inactive']
             // });
+            console.log("GMAIL",window.gmail)
         },
         saveList() {
             chrome.storage.sync.set({
