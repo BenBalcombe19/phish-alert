@@ -6,7 +6,7 @@
     "permissions": [
         "storage",
         "webRequest",
-        "declarativeNetRequest"
+        "webRequestBlocking"
     ],
     "background": {
         "service_worker" : "js/background.js"

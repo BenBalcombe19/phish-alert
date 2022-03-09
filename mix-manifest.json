@@ -1,5 +1,6 @@
 {
     "/dist/js/extension.js": "/dist/js/extension.js",
+    "/dist/js/phishing.js": "/dist/js/phishing.js",
     "/dist/js/extensionInjector.js": "/dist/js/extensionInjector.js",
     "/dist/js/gmailJSLoader.js": "/dist/js/gmailJSLoader.js",
     "/dist/js/background.js": "/dist/js/background.js",
