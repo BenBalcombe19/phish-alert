@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "gmail-js": "^1.0.17",
-        "jquery": "^3.6.0"
+        "jquery": "^3.6.0",
+        "sentiment": "^5.0.2"
     }
 }
