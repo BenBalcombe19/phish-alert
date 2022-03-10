@@ -1,15 +1,28 @@
 <template>
-    <div class="wrapper">
+    <div class="popup-wrapper">
         <h1 class="title">Simple Toggle Sites</h1>
-        <div class="buttons">
+        <!-- <div class="buttons">
             <button type="button" class="state-off" :class="{'is-active': !active}" @click="setActive(false)">Off</button>
             <button type="button" class="state-on" :class="{'is-active': active}" @click="setActive(true)">On</button>
+        </div> -->
+        <div class="criteria-wrapper">
+            <div class="label">
+                <div class="criteria-title">Sender Address</div>
+                <div class="criteria-value">example@mail.com</div>
+            </div>
+            <div class="label">
+                <div class="criteria-title">Sender Address</div>
+                <div class="criteria-value">example@mail.com</div>
+            </div>
+            <div class="label">
+                <div class="criteria-title">Sender Address</div>
+                <div class="criteria-value">example@mail.com</div>
+            </div>
+            <div class="label">
+                <div class="criteria-title">Sender Address</div>
+                <div class="criteria-value">example@mail.com</div>
+            </div>
         </div>
-        <div class="sites">
-            <p>List your websites below, one per line</p>
-            <textarea rows="8" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="list"></textarea>
-        </div>
-        <button type="button" class="state-save" @click="saveList">Save Site List</button>
     </div>
 </template>
 <script>
