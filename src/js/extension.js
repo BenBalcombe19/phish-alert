@@ -23,18 +23,21 @@ function startExtension(gmail) {
             const emailData = gmail.new.get.email_data(emailID);
             const phishingModule = require('./phishing.js');
             let phishing = new phishingModule.Phishing();
-            var senderAddress, subject, content = "";
+            let senderAddress, subject, content = "";
 
+            
             if (emailData) {
                 senderAddress = emailData.from.address;
                 subject = emailData.subject;
                 content = emailData.content_html;
                 console.log("EMAIL DATA:",emailData)
+                var event = new CustomEvent("emailOpened", {detail:emailData});
+                window.dispatchEvent(event);
             } else {
                 console.log("EMAIL DATA NOT LOADED YET")
             }
 
-            senderAddress ? console.log("Sender Address:", senderAddress) : console.log("NO ADDRESS");
+            // senderAddress ? console.log("Sender Address:", senderAddress) : console.log("NO ADDRESS");
             // content ? console.log("Sender Content:", content) : console.log("NO CONTENT");
 
             phishing.validateAddress(senderAddress);

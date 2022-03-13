@@ -5,107 +5,118 @@ body {
     color: #7f8c8d;
     -webkit-font-smoothing: anti-aliased;
 }
-.title {
-    font-size: 24px;
-    color: #2c3e50;
-}
-.buttons {
+
+.popup-wrapper{
     display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    > button {
-
-        &.state-on {
-            border: 1px solid #e74c3c;
-            color: #e74c3c;
-
-            &.is-active,
-            &:hover {
-                border: 1px solid #e74c3c;
-                background: #e74c3c;
-                color: #fff;
-            }
-            &:active {
-                border: 1px solid #e74c3c;
-                background: darken(#e74c3c, 5%);
-                color: #fff;
-            }
-            &:focus {
-                box-shadow: 0 0 0 2px lighten(#e74c3c, 20%);
-            }
-        }
-        &.state-off {
-            border: 1px solid #7f8c8d;
-            color: #7f8c8d;
-
-            &.is-active,
-            &:hover {
-                border: 1px solid #7f8c8d;
-                background: #7f8c8d;
-                color: #fff;
-            }
-            &:active {
-                border: 1px solid #7f8c8d;
-                background: darken(#7f8c8d, 5%);
-                color: #fff;
-            }
-            &:focus {
-                box-shadow: 0 0 0 2px lighten(#7f8c8d, 20%);
-            }
-        }
+    .title {
+        font-size: 24px;
+        color: #1aa260;
     }
-}
-button {
-    background: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    line-height: 1em;
-    border-radius: 4px;
-    border: 0;
-    margin-right: 8px;
-    padding: 6px 24px;
-
-    &:focus {
-        outline: 0;
-    }
-    &:hover {
-        cursor: pointer;
-    }
-    &.state-save {
-        background: #2c3e50;
-        color: #fff;
-        width: 100%;
-        padding: 8px 24px;
-
-        &:active {
-            background: darken(#2c3e50, 5%);
-        }
-        &:focus {
-            box-shadow: 0 0 0 2px lighten(#2c3e50, 20%);
-        }
-    }
-}
-
-.criteria-wrapper{
-    margin: 30px 0;
-    padding: 10px;
+    .buttons {
+        display: flex;
     
-    background-color: #4C8BF5;
-    color: #fff;
-
-    border-radius: 5px;
-
-    font-size: 13px;
-    .label{
-        
-        padding: 8px 0;
-        .criteria-title{
-            display: inline-block;
-            width: 49%;
+        > button {
+    
+            &.state-on {
+                border: 1px solid #e74c3c;
+                color: #e74c3c;
+    
+                &.is-active,
+                &:hover {
+                    border: 1px solid #e74c3c;
+                    background: #e74c3c;
+                    color: #fff;
+                }
+                &:active {
+                    border: 1px solid #e74c3c;
+                    background: darken(#e74c3c, 5%);
+                    color: #fff;
+                }
+                &:focus {
+                    box-shadow: 0 0 0 2px lighten(#e74c3c, 20%);
+                }
+            }
+            &.state-off {
+                border: 1px solid #7f8c8d;
+                color: #7f8c8d;
+    
+                &.is-active,
+                &:hover {
+                    border: 1px solid #7f8c8d;
+                    background: #7f8c8d;
+                    color: #fff;
+                }
+                &:active {
+                    border: 1px solid #7f8c8d;
+                    background: darken(#7f8c8d, 5%);
+                    color: #fff;
+                }
+                &:focus {
+                    box-shadow: 0 0 0 2px lighten(#7f8c8d, 20%);
+                }
+            }
         }
-        .criteria-value{
-            display: inline-block;
-            width: 49%;
+    }
+    button {
+        background: #de5246;
+        width: 80%;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1em;
+        border: none;
+        border-radius: 4px;
+        margin-bottom: 10px;        
+        padding: 6px 24px;
+        color: #fff;
+    
+        &:focus {
+            outline: 0;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+        &.state-save {
+            background: #2c3e50;
+            color: #fff;
+            width: 100%;
+            padding: 8px 24px;
+    
+            &:active {
+                background: darken(#2c3e50, 5%);
+            }
+            &:focus {
+                box-shadow: 0 0 0 2px lighten(#2c3e50, 20%);
+            }
+        }
+    }
+    
+    .criteria-wrapper{
+        width: 90%;
+
+        margin: 30px 0;
+        padding: 10px;
+        
+        background-color: #4C8BF5;
+        color: #fff;
+    
+        border-radius: 5px;
+    
+        font-size: 13px;
+        .label{
+            
+            padding: 8px 0;
+            .criteria-title{
+                display: inline-block;
+                width: 49%;
+            }
+            .criteria-value{
+                display: inline-block;
+                width: 49%;
+            }
         }
     }
 }

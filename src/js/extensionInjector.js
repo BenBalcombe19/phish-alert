@@ -1,5 +1,10 @@
 "use strict";
 
+window.addEventListener('emailOpened', function(event){
+    chrome.runtime.sendMessage({sender:'content-script',type: 'new-email', data: event.detail});
+}, false)
+
+
 function addScript(src) {
     const script = document.createElement("script");
     script.type = "text/javascript";
