@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "permissions": [
         "storage",
-        "webRequest",
-        "webRequestBlocking"
+        "activeTab",
+        "tabs"
     ],
     "background": {
         "service_worker" : "js/background.js"

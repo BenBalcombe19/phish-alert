@@ -1,7 +1,13 @@
 <template>
     <div class="popup-wrapper">
         <h1 class="title">Phish Detector</h1>
-        <div class="criteria-wrapper">
+
+        <label class="switch">
+            <input type="checkbox" v-model="active">
+            <span class="slider round"></span>
+        </label>
+
+        <div class="criteria-wrapper" :class="{ disabled: !active}">
             <div class="label">
                 <div class="criteria-title">Sender Address</div>
                 <div class="criteria-value">{{fromAddress}}</div>
@@ -15,10 +21,10 @@
                 <div class="criteria-value">{{subject}}</div>
             </div>
         </div>
-        <button @click="showStoredData">Get Stored Data</button>
-        <button @click="getAddress">Get Address</button>
-        <button @click="getName">Get Name</button>
-        <button @click="getSubject">Get Subject</button>
+        <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>
+        <button @click="getAddress" :class="{ disabled: !active}">Get Address</button>
+        <button @click="getName" :class="{ disabled: !active}">Get Name</button>
+        <button @click="getSubject" :class="{ disabled: !active}">Get Subject</button>
     </div>
 </template>
 <script>
@@ -59,6 +65,11 @@ export default {
                 }
             },
             deep: true
+        },
+        active: function(newVal){
+            chrome.storage.local.set({
+                active: this.active
+            }, () => {});
         }
     },
     methods: {
@@ -72,15 +83,10 @@ export default {
             // });
         },
         getData(){
-            console.log('INITIALISING DATA')
-            chrome.storage.local.get(['emailData'], (data) => {
+            chrome.storage.local.get(['emailData','active'], (data) => {
                 this.currentMailData = data.emailData;
-                console.log('EMAILDATA FROM STORAGE',data.emailData)
-                // this.isData = true;
-
-                // console.log('DOM Data', this.fromAddress, ':', this.fromName, ':', this.subject)
+                this.active = data.active;
             });    
-            console.log('DOM DATA', this.currentMailData)    
         },
         showStoredData(){
             chrome.storage.local.get(['emailData'], (data) => {

@@ -1,7 +1,8 @@
 // when the extension is first installed, set default values
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.local.set({
-        emailData: {}
+        emailData: {},
+        active: true
     }, function() {});
 });
 
@@ -17,11 +18,3 @@ chrome.runtime.onMessage.addListener(function(msg, sender, response) {
         }
     }
 })
-
-
-
-
-
-
-
-
