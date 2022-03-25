@@ -7,27 +7,43 @@
             <span class="slider round"></span>
         </label>
 
-        <div class="criteria-wrapper" :class="{ disabled: !active}">
-            <div class="label">
-                <div class="criteria-title">Sender Address</div>
-                <div class="criteria-value">{{fromAddress}}</div>
+        <div class="table" :class="{ disabled: !active}">
+            <div class="row header">
+                <div class="cell">Identifier</div>
+                <div class="cell">Value</div>
+                <div class="cell">Risk Rating</div>
+                <div class="cell">Info</div>
             </div>
-            <div class="label">
-                <div class="criteria-title">Sender Name</div>
-                <div class="criteria-value">{{fromName}}</div>
+
+            
+            <div class="row">
+                <div class="cell">Sender Address</div>
+                <div class="cell">{{fromAddress}}</div>
+                <div class="cell"><rating></rating></div>
+                <div class="cell">{{fromAddress}}</div>
             </div>
-            <div class="label">
-                <div class="criteria-title">Subject</div>
-                <div class="criteria-value">{{subject}}</div>
+            <div class="row">
+                <div class="cell">Sender Name</div>
+                <div class="cell">{{fromName}}</div>
+                <div class="cell">{{fromName}}</div>
+                <div class="cell">{{fromName}}</div>
+            </div>
+            <div class="row">
+                <div class="cell">Subject</div>
+                <div class="cell">{{subject}}</div>
+                <div class="cell">{{subject}}</div>
+                <div class="cell">{{subject}}</div>
             </div>
         </div>
-        <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>
+        <!-- <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>
         <button @click="getAddress" :class="{ disabled: !active}">Get Address</button>
         <button @click="getName" :class="{ disabled: !active}">Get Name</button>
-        <button @click="getSubject" :class="{ disabled: !active}">Get Subject</button>
+        <button @click="getSubject" :class="{ disabled: !active}">Get Subject</button> -->
     </div>
 </template>
 <script>
+import rating from './Rating.vue';
+
 export default {
     data() {
         return {
@@ -40,6 +56,9 @@ export default {
             //     inactive: 'images/icon-48x48-off.png'
             // }
         }
+    },
+    components: {
+        rating
     },
     computed: {
         fromAddress(){
