@@ -7,10 +7,10 @@
             <span class="slider round"></span>
         </label>
 
-        <div class="table" :class="{ disabled: !active}">
-            <div class="row header">
+        <div class="table">
+            <div class="row header" :class="{ disabled: !active}">
                 <div class="cell">Identifier</div>
-                <div class="cell">Value</div>
+                <div class="cell value">Value</div>
                 <div class="cell">Risk Rating</div>
                 <div class="cell">Info</div>
             </div>
@@ -18,21 +18,21 @@
             
             <div class="row">
                 <div class="cell">Sender Address</div>
-                <div class="cell">{{fromAddress}}</div>
-                <div class="cell"><rating></rating></div>
-                <div class="cell">{{fromAddress}}</div>
+                <div class="cell value">{{fromAddress}}</div>
+                <div class="cell"><rating :riskValue="1"></rating></div>
+                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
             </div>
             <div class="row">
                 <div class="cell">Sender Name</div>
-                <div class="cell">{{fromName}}</div>
-                <div class="cell">{{fromName}}</div>
-                <div class="cell">{{fromName}}</div>
+                <div class="cell value">{{fromName}}</div>
+                <div class="cell"><rating :riskValue="4"></rating></div>
+                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
             </div>
             <div class="row">
                 <div class="cell">Subject</div>
-                <div class="cell">{{subject}}</div>
-                <div class="cell">{{subject}}</div>
-                <div class="cell">{{subject}}</div>
+                <div class="cell value">{{subject}}</div>
+                <div class="cell"><rating :riskValue="5"></rating></div>
+                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
             </div>
         </div>
         <!-- <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>

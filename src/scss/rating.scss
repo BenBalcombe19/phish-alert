@@ -2,12 +2,25 @@
     display: flex;
     font-weight: 900;
 
-    .color{
+    .dark-green{
         color:#1aa260;
     }
-    .no-color{
-        color: #ddd
+    .light-green{
+        color:#9ac085;
     }
+    .yellow{
+        color:#fff020;
+    }
+    .orange{
+        color:#ffab3c;
+    }
+    .red{
+        color:#b10b0b;
+    }
+    .gray{
+        color:gray;
+    }
+   
 
     .circle{
         margin-right: 2px;
