@@ -175,7 +175,8 @@ body {
                         cursor: pointer;
                     }
                 }
-            } 
+            }
+            
         }
     }
 }
@@ -187,4 +188,5 @@ body {
     color: #d3d3d3 !important;
 }
 
-@import 'rating'
+@import 'rating';
+@import 'info';

@@ -15,25 +15,39 @@
                 <div class="cell">Info</div>
             </div>
 
-            
             <div class="row">
                 <div class="cell">Sender Address</div>
                 <div class="cell value">{{fromAddress}}</div>
                 <div class="cell"><rating :riskValue="1"></rating></div>
-                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
+                <div class="cell">
+                    <span @mouseenter="showAddressInfo = true" @mouseleave="showAddressInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                </div>
             </div>
+
+            <info v-if="showAddressInfo"></info>
+            
             <div class="row">
                 <div class="cell">Sender Name</div>
                 <div class="cell value">{{fromName}}</div>
                 <div class="cell"><rating :riskValue="4"></rating></div>
-                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
+                <div class="cell">
+                    <span @mouseenter="showNameInfo = true" @mouseleave="showNameInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                </div>
             </div>
+
+            <!-- <info v-if="showNameInfo"></info> -->
+
             <div class="row">
                 <div class="cell">Subject</div>
                 <div class="cell value">{{subject}}</div>
                 <div class="cell"><rating :riskValue="5"></rating></div>
-                <div class="cell"><span class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span></div>
+                <div class="cell">
+                    <span @mouseenter="showSubjectInfo = true" @mouseleave="showSubjectInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                </div>
             </div>
+
+            <!-- <info v-if="showSubjectInfo"></info> -->
+
         </div>
         <!-- <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>
         <button @click="getAddress" :class="{ disabled: !active}">Get Address</button>
@@ -42,7 +56,9 @@
     </div>
 </template>
 <script>
+
 import rating from './Rating.vue';
+import info from './Info.vue';
 
 export default {
     data() {
@@ -51,6 +67,9 @@ export default {
             list: [],
             currentMailData: {},
             isData: false,
+            showAddressInfo: false,
+            showNameInfo: false,
+            showSubjectInfo: false,
             // icons: {
             //     active: 'images/icon-48x48.png',
             //     inactive: 'images/icon-48x48-off.png'
@@ -58,7 +77,8 @@ export default {
         }
     },
     components: {
-        rating
+        rating,
+        info
     },
     computed: {
         fromAddress(){
