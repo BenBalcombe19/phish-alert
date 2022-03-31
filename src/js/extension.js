@@ -33,6 +33,8 @@ function startExtension(gmail) {
                 subject = emailData.subject;
                 content = emailData.content_html;
                 console.log("EMAIL DATA:",emailData)
+                phishing.validateSubject(subject);
+                phishing.validateBody('Validating Body:',subject);
                 emailData.scores = phishing.scores;
 
                 if (emailData.from.name.length === 0){
@@ -49,19 +51,15 @@ function startExtension(gmail) {
             // content ? console.log("Sender Content:", content) : console.log("NO CONTENT");
 
             phishing.validateAddress(senderAddress);
-            phishing.validateSubject(subject);
+            // phishing.validateSubject(subject);
 
             if (phishing.phishy){
                 gmail.tools.add_modal_window('Potential Phishing Attempt', 'Do you want to continue?',
                     function () {
                         console.log("HELLO WORLD")
                         gmail.tools.remove_modal_window();
-                        chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-                            console.log("RESPONSE",response);
-                        });
                     });
             }
-
         });
 
         gmail.observe.on("compose", (compose) => {
