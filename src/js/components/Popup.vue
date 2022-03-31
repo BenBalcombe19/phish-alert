@@ -17,42 +17,40 @@
 
             <div class="row">
                 <div class="cell">Sender Address</div>
-                <div class="cell value">{{fromAddress}}</div>
-                <div class="cell"><rating :riskValue="1"></rating></div>
+                <div class="cell value">{{fromAddressText}}</div>
+                <div class="cell"><rating :riskValue="addressScore"></rating></div>
                 <div class="cell">
-                    <span @mouseenter="showAddressInfo = true" @mouseleave="showAddressInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @click="address.show = ! address.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
-            <info v-if="showAddressInfo"></info>
+            <info :show="address.show" :data="address.data"></info>
             
             <div class="row">
                 <div class="cell">Sender Name</div>
-                <div class="cell value">{{fromName}}</div>
-                <div class="cell"><rating :riskValue="4"></rating></div>
+                <div class="cell value">{{fromNameText}}</div>
+                <div class="cell"><rating :riskValue="nameScore"></rating></div>
                 <div class="cell">
-                    <span @mouseenter="showNameInfo = true" @mouseleave="showNameInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @mouseenter="name.show = true" @mouseleave="name.show = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
-            <!-- <info v-if="showNameInfo"></info> -->
+            <info :show="name.show" :data="name.data"></info>
 
             <div class="row">
                 <div class="cell">Subject</div>
-                <div class="cell value">{{subject}}</div>
-                <div class="cell"><rating :riskValue="5"></rating></div>
+                <div class="cell value">{{subjectText}}</div>
+                <div class="cell"><rating :riskValue="subjectScore"></rating></div>
                 <div class="cell">
-                    <span @mouseenter="showSubjectInfo = true" @mouseleave="showSubjectInfo = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @click="subject.show = ! subject.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
-            <!-- <info v-if="showSubjectInfo"></info> -->
+            <info :show="subject.show" :data="subject.data"></info>
 
         </div>
-        <!-- <button @click="showStoredData" :class="{ disabled: !active}">Get Stored Data</button>
-        <button @click="getAddress" :class="{ disabled: !active}">Get Address</button>
-        <button @click="getName" :class="{ disabled: !active}">Get Name</button>
-        <button @click="getSubject" :class="{ disabled: !active}">Get Subject</button> -->
+
+        
     </div>
 </template>
 <script>
@@ -67,9 +65,19 @@ export default {
             list: [],
             currentMailData: {},
             isData: false,
-            showAddressInfo: false,
-            showNameInfo: false,
-            showSubjectInfo: false,
+            address:{
+                show: false,
+                data: ['hello', 'my', 'world']
+            },
+            name:{
+                show: false,
+                data: ['world']
+            },
+            subject:{
+                show: false,
+                data: ['Does the subject convey urgency using language such as "important", "immediately" "urgent", etc. This is a common tactic among attackers to provoke an emotional reaction.',
+                 'Does the subject contain any unusual characters ie "$","%","@",etc. This is also a cause for concern.']
+            },
             // icons: {
             //     active: 'images/icon-48x48.png',
             //     inactive: 'images/icon-48x48-off.png'
@@ -81,14 +89,23 @@ export default {
         info
     },
     computed: {
-        fromAddress(){
+        fromAddressText(){
             return this.isData ? this.currentMailData.from.address : 'No Information Found';
         },
-        fromName(){
+        fromNameText(){
             return this.isData ? this.currentMailData.from.name : 'No Information Found'; 
         },
-        subject(){
+        subjectText(){
             return this.isData ? this.currentMailData.subject : 'No Information Found';
+        },
+        addressScore(){
+            return this.isData ? this.currentMailData.scores.address : 'No Information Found';
+        },
+        nameScore(){
+            return this.isData ? this.currentMailData.scores.name : 'No Information Found'; 
+        },
+        subjectScore(){
+            return this.isData ? this.currentMailData.scores.subject : 'No Information Found';
         },
     },
     watch : {
@@ -132,22 +149,10 @@ export default {
                 console.log('EMAILDATA FROM STORAGE',data.emailData)
             });
         },
-        getAddress(){
-            console.log('Address:', this.fromAddress)
-        },
-        getName(){
-            console.log('Name:', this.fromName)
-        },
-        getSubject(){
-            console.log('Subject:', this.subject)
-        }
     },
     
     beforeMount() {
         chrome.runtime.sendMessage({sender:'popup',type: 'before-mounted'});
-    },
-    created(){
-        chrome.runtime.sendMessage({sender:'popup',type: 'created'});
     },
     mounted(){
         chrome.runtime.sendMessage({sender:'popup',type: 'mounted'});
@@ -161,11 +166,5 @@ export default {
             }
         })
     },
-    beforeDestroy(){
-        chrome.runtime.sendMessage({sender:'popup',type: 'before-destroyed'});
-    },
-    destroyed(){
-        chrome.runtime.sendMessage({sender:'popup',type: 'destroyed'});
-    }
 }
 </script>
