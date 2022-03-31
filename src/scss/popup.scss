@@ -119,6 +119,8 @@ body {
     
         font-size: 13px;
 
+        box-shadow: 0 0 1px;
+
 
         .row{
             display: flex;
@@ -142,33 +144,24 @@ body {
             &:last-child{
                 border-radius: 0 0 5px 5px;
             }
-
+            
             .cell{
                 flex: 1;
-
+                
                 color: #666;
-    
+                
                 padding: 10px; 
-
+                
                 overflow-x: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-
+                
                 box-sizing: border-box;
-
+                
                 &.value{
                     flex: 2;
                 }
-
-                // &:first-child{
-                //     padding-left: 20px;
-                //     box-sizing: border-box;
-                // }
-                // &:last-child{
-                //     padding-right: 20px;
-                //     box-sizing: border-box;
-                // }
-
+                
                 .learn-button{
                     color: #4C8BF5;
                     &:hover{
