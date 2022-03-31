@@ -25,12 +25,20 @@ function startExtension(gmail) {
             let phishing = new phishingModule.Phishing();
             let senderAddress, subject, content = "";
 
+            var email = new gmail.dom.email(gmail.new.get.email_id());
+
             
             if (emailData) {
                 senderAddress = emailData.from.address;
                 subject = emailData.subject;
                 content = emailData.content_html;
                 console.log("EMAIL DATA:",emailData)
+                emailData.scores = phishing.scores;
+
+                if (emailData.from.name.length === 0){
+                    emailData.from.name = email.from().name;
+                }
+
                 var event = new CustomEvent("emailOpened", {detail:emailData});
                 window.dispatchEvent(event);
             } else {
