@@ -23,7 +23,7 @@ function startExtension(gmail) {
             const emailData = gmail.new.get.email_data(emailID);
             const phishingModule = require('./phishing.js');
             let phishing = new phishingModule.Phishing();
-            let senderAddress, subject, content = "";
+            let senderAddress, senderName, subject, content = "";
 
             var email = new gmail.dom.email(gmail.new.get.email_id());
 
@@ -32,14 +32,22 @@ function startExtension(gmail) {
                 senderAddress = emailData.from.address;
                 subject = emailData.subject;
                 content = emailData.content_html;
-                console.log("EMAIL DATA:",emailData)
-                phishing.validateSubject(subject);
-                phishing.validateBody('Validating Body:',subject);
-                emailData.scores = phishing.scores;
-
-                if (emailData.from.name.length === 0){
-                    emailData.from.name = email.from().name;
+                
+                if (typeof emailData.from.name !== 'undefined'){
+                    if (emailData.from.name.length === 0){
+                        emailData.from.name = email.from().name;                         
+                    }
                 }
+                senderName = emailData.from.name;
+                
+                console.log("EMAIL DATA:",emailData)
+
+                phishing.validateName(senderName);
+                phishing.validateSubject(subject, userEmail);
+                phishing.validateBody(content, emailData.from.address);
+                emailData.scores = phishing.scores;
+                emailData.links = phishing.linkArray;
+
 
                 var event = new CustomEvent("emailOpened", {detail:emailData});
                 window.dispatchEvent(event);

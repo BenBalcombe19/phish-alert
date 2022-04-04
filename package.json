@@ -26,6 +26,7 @@
         "font-awesome": "^4.7.0",
         "gmail-js": "^1.0.17",
         "jquery": "^3.6.0",
-        "sentiment": "^5.0.2"
+        "sentiment": "^5.0.2",
+        "tld-extract": "^2.0.1"
     }
 }
