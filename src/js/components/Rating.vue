@@ -51,10 +51,12 @@ export default {
     
     methods: {
         riskClass(id){
-            if (id <= this.riskValue){
-                return this.riskColor
-            } else {
-                return 'gray'
+            if (this.riskValue != false){
+                if (id <= this.riskValue){
+                    return this.riskColor
+                } else {
+                    return 'gray'
+                }
             }
         }
     },

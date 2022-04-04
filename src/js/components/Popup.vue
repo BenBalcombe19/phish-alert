@@ -7,18 +7,18 @@
             <span class="slider round"></span>
         </label>
 
-        <div class="table">
+        <div v-if="isData" class="table">
             <div class="row header" :class="{ disabled: !active}">
-                <div class="cell">Identifier</div>
-                <div class="cell value">Value</div>
+                <div class="cell">Details</div>
+                <div class="cell value">Content</div>
                 <div class="cell">Risk Rating</div>
                 <div class="cell">Info</div>
             </div>
 
             <div class="row">
                 <div class="cell">Sender Address</div>
-                <div class="cell value">{{fromAddressText}}</div>
-                <div class="cell"><rating :riskValue="addressScore"></rating></div>
+                <div class="cell value"><abbr :title="fromAddressText">{{fromAddressText}}</abbr></div>
+                <div class="cell"><rating :riskValue="fromAddressScore"></rating></div>
                 <div class="cell">
                     <span @click="address.show = ! address.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
@@ -28,10 +28,10 @@
             
             <div class="row">
                 <div class="cell">Sender Name</div>
-                <div class="cell value">{{fromNameText}}</div>
-                <div class="cell"><rating :riskValue="nameScore"></rating></div>
+                <div class="cell value"><abbr :title="fromNameText">{{fromNameText}}</abbr></div>
+                <div class="cell"><rating :riskValue="fromNameScore"></rating></div>
                 <div class="cell">
-                    <span @mouseenter="name.show = true" @mouseleave="name.show = false" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @click="name.show = !name.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
@@ -39,7 +39,7 @@
 
             <div class="row">
                 <div class="cell">Subject</div>
-                <div class="cell value">{{subjectText}}</div>
+                <div class="cell value"><abbr :title="subjectText">{{subjectText}}</abbr></div>
                 <div class="cell"><rating :riskValue="subjectScore"></rating></div>
                 <div class="cell">
                     <span @click="subject.show = ! subject.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
@@ -48,6 +48,28 @@
 
             <info :show="subject.show" :data="subject.data"></info>
 
+        </div>
+
+        <div v-if="isData" class="table link-table">
+
+            <div class="row header sticky" :class="{ disabled: !active}">
+                <div class="cell">Link Text</div>
+                <div class="cell value">Link URL</div>
+                <div class="cell">Domain Match</div>
+                <div class="cell">Risk Rating</div>
+            </div>
+
+            <div class="row" v-for="link in currentMailData.links" :key="link.id">
+                <div class="cell"><abbr :title="link.innerText">{{link.innerText}}</abbr></div>
+                <div class="cell value"><abbr :title="link.href" v-html="domainHighlightURL(link.href,link.hostname)"></abbr></div>
+                <div class="cell tick-cross">
+                    <i v-if="link.senderDomainDisparity" class="fa-solid fa-circle-xmark"></i>
+                    <i v-else class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="cell">
+                    <rating :riskValue="link.riskRating"></rating>
+                </div>
+            </div>
         </div>
 
         
@@ -98,10 +120,10 @@ export default {
         subjectText(){
             return this.isData ? this.currentMailData.subject : 'No Information Found';
         },
-        addressScore(){
+        fromAddressScore(){
             return this.isData ? this.currentMailData.scores.address : 'No Information Found';
         },
-        nameScore(){
+        fromNameScore(){
             return this.isData ? this.currentMailData.scores.name : 'No Information Found'; 
         },
         subjectScore(){
@@ -149,6 +171,9 @@ export default {
                 console.log('EMAILDATA FROM STORAGE',data.emailData)
             });
         },
+        domainHighlightURL(url,domain){
+            return url.replace(domain, '<span class="domain-highlight">' + domain + '</span>')
+        }
     },
     
     beforeMount() {

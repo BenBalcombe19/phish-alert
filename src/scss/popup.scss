@@ -121,7 +121,10 @@ body {
 
         box-shadow: 0 0 1px;
 
-
+        &.link-table{
+            max-height: 200px;
+            overflow-y: scroll;
+        }
         .row{
             display: flex;
 
@@ -134,7 +137,7 @@ body {
                 background-color: #4C8BF5;
 
                 border-radius: 5px 5px 0 0;
-                
+                                
                 .cell{
                     color: #fff;
                     font-weight: bold;
@@ -160,6 +163,37 @@ body {
                 
                 &.value{
                     flex: 2;
+                }
+
+                &.tick-cross{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 5px;
+                    font-size: 21px;
+
+                    .fa-circle-check{
+                        color: #1aa260;
+                    }
+                    .fa-circle-xmark{
+                        color: #e90000;
+                    }
+                }
+
+                &:hover{
+                    cursor: default;
+                }
+
+                abbr[title] {
+                    text-decoration: none;
+
+                    .domain-highlight{
+                        background-color: #4C8BF5;
+                        color: #fff;
+                        border-radius: 3px;
+                        padding: 1px 3px;
+                        font-weight: bold;
+                    }
                 }
                 
                 .learn-button{
