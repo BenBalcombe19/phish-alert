@@ -1,22 +1,43 @@
-.info-wrapper{
+.info-container{
     max-height:0;
+
     
     background: #b10b0b;
     color: white;
+
+    border-radius: 0 0 5px 5px;
     
     overflow: hidden;
     transition: all .3s ease-in-out;
     
     &.expanded {
-        max-height: 100px;
+        max-height: 200px;
         padding: 10px;
+    }
+    
+    &.table-title-info{
+        align-self: self-start;
+
+        background-color: $extension-green;
+
+        max-width: 90%;
+        border-radius: 5px;
     }
 
     .info-title{
         font-weight: bold;
+        font-size: 15px;
     }
 
     .info-list{
         padding-left: 25px;
     }  
+
+    .info-close{
+        width: 97%;
+        
+        text-align: center;
+        
+        cursor: pointer;
+    }
 }

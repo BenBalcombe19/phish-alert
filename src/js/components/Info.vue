@@ -1,25 +1,24 @@
 <template>
-    <div  class="info-wrapper" :class="{ 'expanded': show}">
-        <div class="info-title">Useful Tips</div>
+    <div class="info-container" :class="{ 'expanded': show, 'table-title-info': !inTable}">
+        <div class="info-title">{{title}}</div>
         <ul class="info-list">
             <li v-for="point in data" :key="point.id">
                 {{point}}
             </li>
-            <!-- <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                Deleniti repudiandae, dolor commodi ullam iure voluptatibus 
-                aperiam natus nostrum ipsum dignissimos nobis!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                Deleniti repudiandae, dolor commodi ullam iure voluptatibus 
-                aperiam natus nostrum ipsum dignissimos nobis!</li> -->
         </ul>
+        <i class="info-close fa-solid fa-chevron-up" @click="close()"></i>
     </div>
 </template>
 
 <script>
 export default {
     props: {
+        settings: false,
         show: false,
         data: [],
+        inTable: true,
+        title: '',
+        activeWarning: false,
     },
 
     data() {
@@ -27,23 +26,27 @@ export default {
             showInfo: false,
         }
     },
+
+    watch : {
+        activeWarning: function(newVal){
+            chrome.storage.local.set({
+                activeWarning: this.activeWarning
+            }, () => {});
+        },
+    },
+
     computed: {
 
     },
     
     methods: {
-        
-    },
-    
-    beforeMount() {
-    },
-    created(){
+        close(){
+            this.$emit('close-popup')
+        }
     },
     mounted(){
+
     },
-    beforeDestroy(){
-    },
-    destroyed(){
-    }
+
 }
 </script>
