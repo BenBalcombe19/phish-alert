@@ -1,5 +1,6 @@
 var Sentiment = require('sentiment');
 var sentiment = new Sentiment();
+const emojiTree = require('emoji-tree');
 
 
 
@@ -11,20 +12,23 @@ class Phishing {
             subject: 1,
         }
         this.linkArray = [];
-        this.phishy = false;
-        this.specialCharacterRegex = new RegExp('[!#$%^&*(){}|<>]');
-
+        this.attachmentArray = [];
+        this.specialCharacterRegex = new RegExp('[!#$+:;%^&*(){}|<>\-]');
     }
 
     validateAddress(address){
-        if (address == "noreply-purchases@youtube.com"){
-            this.phishy = true;
-        }
+
     }
 
     validateName(fromName){
-        console.log('testing name', fromName);
-        if (this.specialCharacterRegex.test(fromName)){
+        let containsSpecialCharacter = this.specialCharacterRegex.test(fromName);
+        let containsEmoji = this.isEmoji(fromName);
+
+        if (containsSpecialCharacter && containsEmoji){
+            this.scores.name = 5;
+        } else if(containsSpecialCharacter){
+            this.scores.name = 4;
+        } else if(containsEmoji){
             this.scores.name = 4;
         }
     }
@@ -32,8 +36,9 @@ class Phishing {
     validateSubject(subject, userEmail){
         let urgencyCounter = 0;
         let urgencyWords = ["now","hurry","quick","limited","urgent","urgently","important",'required'];
-        let tokenisedSubject = subject ? subject.toLowerCase().split(" ") : "";
-        let containsSpecialCharacter = false;
+        let tokenisedSubject = subject ? subject.toLowerCase().split(" ") : [];
+        console.log('TOKENISED SUBJECT', tokenisedSubject)
+        let containsSpecialCharacter = this.specialCharacterRegex.test(subject);
         let username = userEmail.split('@')[0];
         
         tokenisedSubject.forEach(word => {
@@ -41,9 +46,7 @@ class Phishing {
                 urgencyCounter++;
             }
         });
-        
-        containsSpecialCharacter = this.specialCharacterRegex.test(subject);
-
+    
         if (containsSpecialCharacter){
             if (urgencyCounter < 2){
                 this.scores.subject = 4;
@@ -59,7 +62,9 @@ class Phishing {
                 this.scores.subject = 5;
             }
         } else if(subject.includes(username)){
-            this.scores.subject = 5
+            this.scores.subject = 5;
+        } else if (this.isEmoji(subject)){
+            this.scores.subject = 4;
         }
         // var result = sentiment.analyze(subject);
         // console.log("Sentiment result:",result);
@@ -78,8 +83,7 @@ class Phishing {
                 isValidHost = this.isValidHost(anchorTag.hostname)
                 isLinkTextDisparity = this._isLinkTextDisparity(anchorTag.href, anchorTag.innerText)
                 isSenderDomainDisparity = this._isSenderDomainDisparity(senderAddress, anchorTag.hostname)
-
-                riskRating = isSenderDomainDisparity || isLinkTextDisparity || isValidHost ? 5 : 1;
+                riskRating = this._calculateLinkScore(isSenderDomainDisparity,isLinkTextDisparity, isValidHost)
 
                 this.linkArray.push({
                     href: anchorTag.href,
@@ -92,6 +96,30 @@ class Phishing {
         })
         
         return this.linkArray
+    }
+
+    validateAttachments(attachments){
+
+        // attachments.forEach(attachment => {
+        //         this.attachmentArray.push({
+        //             fileName: attachment.name,
+        //             size: attachment.size,
+        //             type: attachment.type,
+        //         })
+        // })
+        
+        return this.attachmentArray
+    }
+    
+
+    isEmoji(string){
+        emojiTree(string).forEach((character) => {
+            if(character.type === 'emoji'){
+                return true
+            }
+        })
+
+        return false;
     }
     
     //************************************************//
@@ -112,9 +140,9 @@ class Phishing {
     // Returns true if domain is an ip address
     isValidHost(domain){
         let regex = new RegExp('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$');
-        let isIPAdress = regex.test(domain);
+        let isIPAddress = regex.test(domain);
 
-        return isIPAdress ? true : false; // If link domain is an ipAddress then return 5 as risk rating, else 1   
+        return isIPAddress ? false : true; // If link domain is an ipAddress then return 5 as risk rating, else 1   
     }
 
     // Returns true if the link text is a url and does not match the href of the link
@@ -139,6 +167,7 @@ class Phishing {
     
             return senderDomain != parser.parse_host(hostname, {allowUnknownTLD : true}).domain ? true : false;
         } catch{
+            console.log('errored', senderAddress,hostname)
             return false;
         }
     }
@@ -154,6 +183,17 @@ class Phishing {
         }
       
         return url.protocol === "http:" || url.protocol === "https:";
+    }
+
+    // Returns risk score
+    _calculateLinkScore(isSenderDomainDisparity, isLinkTextDisparity, isValidHost){
+        if (isLinkTextDisparity || !isValidHost){
+            return 5;
+        } else if (isSenderDomainDisparity){
+            return 4;
+        } else {
+            return 1;
+        }
     }
 }
 

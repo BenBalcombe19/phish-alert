@@ -25,34 +25,43 @@ function startExtension(gmail) {
             let phishing = new phishingModule.Phishing();
             let senderAddress, senderName, subject, content = "";
 
-            var email = new gmail.dom.email(gmail.new.get.email_id());
+            try{
+                var email = new gmail.dom.email(gmail.new.get.email_id());
+            } catch {
+                console.log('email data errored')
+            }
 
-            
             if (emailData) {
+                console.log("EMAIL DATA:", emailData);
+
                 senderAddress = emailData.from.address;
                 subject = emailData.subject;
                 content = emailData.content_html;
-                
-                if (typeof emailData.from.name !== 'undefined'){
-                    if (emailData.from.name.length === 0){
-                        emailData.from.name = email.from().name;                         
+
+                if (typeof emailData.from.name !== 'undefined') {
+                    if (emailData.from.name.length === 0) {
+                        emailData.from.name = email.from().name;
                     }
                 }
                 senderName = emailData.from.name;
-                
-                console.log("EMAIL DATA:",emailData)
 
                 phishing.validateName(senderName);
                 phishing.validateSubject(subject, userEmail);
                 phishing.validateBody(content, emailData.from.address);
+                // phishing.validateAttachments();
                 emailData.scores = phishing.scores;
                 emailData.links = phishing.linkArray;
 
+                emailData.userEmail = userEmail;
 
-                var event = new CustomEvent("emailOpened", {detail:emailData});
+
+                let event = new CustomEvent("emailOpened", { detail: emailData });
                 window.dispatchEvent(event);
+
             } else {
                 console.log("EMAIL DATA NOT LOADED YET")
+                let event = new CustomEvent("no-data", { detail: emailData });
+                window.dispatchEvent(event);
             }
 
             // senderAddress ? console.log("Sender Address:", senderAddress) : console.log("NO ADDRESS");
@@ -61,7 +70,7 @@ function startExtension(gmail) {
             phishing.validateAddress(senderAddress);
             // phishing.validateSubject(subject);
 
-            if (phishing.phishy){
+            if (phishing.phishy) {
                 gmail.tools.add_modal_window('Potential Phishing Attempt', 'Do you want to continue?',
                     function () {
                         console.log("HELLO WORLD")
@@ -69,6 +78,8 @@ function startExtension(gmail) {
                     });
             }
         });
+
+
 
         gmail.observe.on("compose", (compose) => {
             console.log("New compose window is opened!", compose);
