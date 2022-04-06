@@ -4,6 +4,11 @@ window.addEventListener('emailOpened', function(event){
     chrome.runtime.sendMessage({sender:'content-script',type: 'new-email', data: event.detail});
 }, false)
 
+window.addEventListener('no-data', function(event){
+    chrome.runtime.sendMessage({sender:'content-script',type: 'no-data', data: event.detail});
+}, false)
+
+
 
 function addScript(src) {
     const script = document.createElement("script");
