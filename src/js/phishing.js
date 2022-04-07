@@ -37,7 +37,6 @@ class Phishing {
         let urgencyCounter = 0;
         let urgencyWords = ["now","hurry","quick","limited","urgent","urgently","important",'required'];
         let tokenisedSubject = subject ? subject.toLowerCase().split(" ") : [];
-        console.log('TOKENISED SUBJECT', tokenisedSubject)
         let containsSpecialCharacter = this.specialCharacterRegex.test(subject);
         let username = userEmail.split('@')[0];
         
