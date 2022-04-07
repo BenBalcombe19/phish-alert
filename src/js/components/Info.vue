@@ -13,26 +13,15 @@
 <script>
 export default {
     props: {
-        settings: false,
         show: false,
         data: [],
         inTable: true,
         title: '',
-        activeWarning: false,
     },
 
     data() {
         return {
-            showInfo: false,
         }
-    },
-
-    watch : {
-        activeWarning: function(newVal){
-            chrome.storage.local.set({
-                activeWarning: this.activeWarning
-            }, () => {});
-        },
     },
 
     computed: {

@@ -1,0 +1,73 @@
+.settings-container{
+    position: relative;
+
+    max-width:0;
+    max-height: 0;
+
+    
+    background: #888;
+    color: #fff;
+
+    border-radius: 5px;
+    box-shadow: 0 0 5px #000;
+    
+    overflow: hidden;
+    transition: all .3s ease-in-out;
+    
+    &.expanded {
+        max-width: 300px;
+        max-height: 200px;
+        padding: 10px;
+    }
+
+    .settings-title{
+        font-weight: bold;
+        font-size: 18px;
+
+        margin-bottom: 10px;
+
+        .settings-cog-small{
+            margin-left: 3px;
+        }
+    }
+
+    .setting{
+        display: flex;
+        justify-content: space-between;
+
+        margin-bottom: 10px;
+        width: 270px;
+
+        .setting-title{
+            font-size: 13px;
+        }
+
+        select {
+            width: 117px;
+            padding: 5px;
+
+            background: #fff;
+            color: #000;
+            
+            border-radius: 5px;
+            
+            cursor: pointer;
+        }
+
+        input {
+            cursor: pointer;
+        }
+    
+    }
+    .settings-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        margin: 10px;
+        
+        font-size: 15px;
+        
+        cursor: pointer;
+    }
+}
