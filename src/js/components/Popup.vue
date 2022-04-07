@@ -5,12 +5,12 @@
         <h1 v-else class="title center">No Email Found</h1>
 
         <span class="options-wrapper">
-            <settings :settings="true" :show="settings.show" :title="settings.title" :activeWarning="settings.activeWarning" :inTable="false" @close-popup="settings.show = false"></settings>
+            <settings :show="settings.show" :title="settings.title" @close-popup="settings.show = false"></settings>
             
-            <i class="fa-solid fa-gear" @click="settings.show = !settings.show"></i>
+            <i class="settings-cog-main fa-solid fa-gear" @click="settings.show = !settings.show"></i>
             
             <label class="switch">
-                <input type="checkbox" v-model="active">
+                <input type="checkbox" v-model="extensionActive">
                 <span class="slider round"></span>
             </label>
             
@@ -22,7 +22,7 @@
         <!-- EMAIL DETAILS TABLE -->
         <div v-if="isData" class="table-title">General Details:</div>
         <div v-if="isData" class="table">
-            <div class="row header" :class="{ disabled: !active}">
+            <div class="row header" :class="{ disabled: !extensionActive}">
                 <div class="cell">Details</div>
                 <div class="cell value">Content</div>
                 <div class="cell">Risk Rating</div>
@@ -34,7 +34,7 @@
                 <div class="cell value"><abbr :title="currentMailData.from.address">{{currentMailData.from.address}}</abbr></div>
                 <div class="cell"><rating :riskValue="fromAddressScore"></rating></div>
                 <div class="cell">
-                    <span @click="address.show = ! address.show" class="learn-button" :class="{ 'disabled-text': !active}">
+                    <span @click="address.show = ! address.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">
                         Learn More 
                         <i v-if="!address.show" class="fa-solid fa-circle-info"></i>
                         <i v-else class="fa-solid fa-chevron-up"></i>
@@ -49,7 +49,7 @@
                 <div class="cell value"><abbr :title="currentMailData.from.name">{{currentMailData.from.name}}</abbr></div>
                 <div class="cell"><rating :riskValue="fromNameScore"></rating></div>
                 <div class="cell">
-                    <span @click="name.show = !name.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @click="name.show = !name.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
                 <div class="cell value"><abbr :title="currentMailData.subject">{{currentMailData.subject}}</abbr></div>
                 <div class="cell"><rating :riskValue="subjectScore"></rating></div>
                 <div class="cell">
-                    <span @click="subject.show = ! subject.show" class="learn-button" :class="{ 'disabled-text': !active}">Learn More <i class="fa-solid fa-circle-info"></i></span>
+                    <span @click="subject.show = ! subject.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
             </div>
 
@@ -70,7 +70,7 @@
 
         <!-- LINKS TABLE -->
         <div v-if="isData && currentMailData.links.length != 0" class="table-title">Link Details 
-            <span @click="linkInfo.show = ! linkInfo.show" class="learn-button" :class="{ 'disabled-text': !active}">
+            <span @click="linkInfo.show = ! linkInfo.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">
                 Learn More <i class="fa-solid fa-circle-info"></i>
             </span>
         </div>
@@ -78,7 +78,7 @@
 
         <div v-if="isData && currentMailData.links.length != 0" class="table link-table">
 
-            <div class="row header sticky" :class="{ disabled: !active}">
+            <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell">Link Text</div>
                 <div class="cell value">Link URL</div>
                 <div class="cell">Domain Match</div>
@@ -100,7 +100,7 @@
 
         <!-- ATTACHMENTS TABLE -->
         <div v-if="isData && currentMailData.attachments.length != 0" class="table-title">Attachment(s) Details 
-            <span @click="attachmentInfo.show = ! attachmentInfo.show" class="learn-button" :class="{ 'disabled-text': !active}">
+            <span @click="attachmentInfo.show = ! attachmentInfo.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">
                 Learn More <i class="fa-solid fa-circle-info"></i>
             </span>
         </div>
@@ -108,7 +108,7 @@
 
         <div v-if="isData && currentMailData.attachments.length != 0" class="table link-table">
 
-            <div class="row header sticky" :class="{ disabled: !active}">
+            <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell">File Name</div>
                 <div class="cell value">Type</div>
                 <div class="cell">Size</div>
@@ -137,14 +137,13 @@ import settings from './Settings.vue';
 export default {
     data() {
         return {
-            active: false,
+            extensionActive: false,
             list: [],
             currentMailData: {},
             isData: false,
             settings:{
                 show: false,
                 title: 'Settings',
-                activeWarning: false,
             },
             address:{
                 show: false,
@@ -164,13 +163,13 @@ export default {
             },
             linkInfo:{
                 show: false,
-                title: 'Table Information',
+                title: 'Link Information',
                 data:['Link Text - This is the text of the link displayed to the user e.g "Click Here"','Link URL - This is the actual URL that you will be directed to when you click the link text e.g "https://google.com"',
                     'Domain Match - This refers to whether the domain of the Link URL (Highlighted in Blue) matches the domain of the sender address e.g no-reply@google.com, the domain is google.com']
             },
             attachmentInfo:{
                 show: false,
-                title: 'Table Information',
+                title: 'Attachment Information',
                 data:['Link Text - This is the text of the link displayed to the user e.g "Click Here"','Link URL - This is the actual URL that you will be directed to when you click the link text e.g "https://google.com"',
                     'Domain Match - This refers to whether the domain of the Link URL (Highlighted in Blue) matches the domain of the sender address e.g no-reply@google.com, the domain is google.com']
             }
@@ -224,9 +223,9 @@ export default {
             },
             deep: true
         },
-        active: function(newVal){
+        extensionActive: function(newVal){
             chrome.storage.local.set({
-                active: this.active
+                extensionActive: this.extensionActive
             }, () => {});
         },
     },
@@ -241,10 +240,9 @@ export default {
             // });
         },
         getData(){
-            chrome.storage.local.get(['emailData','active','activeWarning'], (data) => {
+            chrome.storage.local.get(['emailData','extensionActive'], (data) => {
                 this.currentMailData = data.emailData;
-                this.active = data.active;
-                this.activeWarning = data.activeWarning;
+                this.extensionActive = data.extensionActive;
             });    
         },
         domainHighlightURL(url,domain){

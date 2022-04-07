@@ -14,6 +14,13 @@ const loaderId = setInterval(() => {
 function startExtension(gmail) {
     console.log("Extension loading...");
     window.gmail = gmail;
+    var settings;
+    let getSettingsDataEvent = new CustomEvent("get-settings-data");
+    window.dispatchEvent(getSettingsDataEvent);
+
+    window.addEventListener('settings-retrieved', function(event){
+        settings = event.detail
+    }, false)
 
     gmail.observe.on("load", () => {
         const userEmail = gmail.get.user_email();
@@ -54,35 +61,39 @@ function startExtension(gmail) {
 
                 emailData.userEmail = userEmail;
 
+                window.dispatchEvent(new CustomEvent("emailOpened", { detail: emailData }));
 
-                let event = new CustomEvent("emailOpened", { detail: emailData });
-                window.dispatchEvent(event);
+                if (settings.warningActive) {
+                    if (!validScores(settings.warningThreshold, emailData.scores,emailData.links)){
+                        gmail.tools.add_modal_window('Potential Phishing Attempt', 'Do you want to continue?', () => {
+                            gmail.tools.remove_modal_window();
+                        });
+                    }
+                }
 
             } else {
                 console.log("EMAIL DATA NOT LOADED YET")
-                let event = new CustomEvent("no-data", { detail: emailData });
-                window.dispatchEvent(event);
+                window.dispatchEvent(new CustomEvent("no-data", { detail: emailData }));
             }
 
-            // senderAddress ? console.log("Sender Address:", senderAddress) : console.log("NO ADDRESS");
-            // content ? console.log("Sender Content:", content) : console.log("NO CONTENT");
-
-            phishing.validateAddress(senderAddress);
-            // phishing.validateSubject(subject);
-
-            if (phishing.phishy) {
-                gmail.tools.add_modal_window('Potential Phishing Attempt', 'Do you want to continue?',
-                    function () {
-                        console.log("HELLO WORLD")
-                        gmail.tools.remove_modal_window();
-                    });
-            }
-        });
-
-
-
-        gmail.observe.on("compose", (compose) => {
-            console.log("New compose window is opened!", compose);
         });
     });
+}
+
+function validScores(threshold, scores, links){
+    let valid = true;
+
+    Object.values(scores).forEach((score) => {
+        if (score >= threshold){
+            valid = false;
+        }
+    });
+
+    links.forEach((link) => {
+        if (link.riskRating >= threshold){
+            valid = false;
+        }
+    })
+
+    return valid;
 }
