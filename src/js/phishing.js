@@ -1,11 +1,11 @@
 var Sentiment = require('sentiment');
 var sentiment = new Sentiment();
 const emojiTree = require('emoji-tree');
-
-
+const parser = require('tld-extract');
 
 class Phishing {
     constructor(){
+        this.overallRating = 1;
         this.scores = {
             address: 1,
             name: 1,
@@ -13,7 +13,33 @@ class Phishing {
         }
         this.linkArray = [];
         this.attachmentArray = [];
-        this.specialCharacterRegex = new RegExp('[!#$+.:;%^&*(){}|<>\-]');
+        this.specialCharacterRegex = new RegExp('[!#$+:;%^&*(){}|<>\-]');
+    }
+
+    calculateOverallRating(){
+        let elementCounter = 0;
+        let riskTotal = 0;
+
+        Object.values(this.scores).forEach(value => {
+            riskTotal += value;
+            elementCounter++;
+        })
+
+        if (this.linkArray.length !=0){
+            this.linkArray.forEach(link => {
+                riskTotal += link.riskRating
+                elementCounter++;
+            })
+        }
+
+        if (this.attachmentArray.length !=0){
+            this.attachmentArray.forEach(attachment => {
+                riskTotal += attachment.riskRating
+                elementCounter++;
+            })
+        }
+
+        this.overallRating = Math.ceil(riskTotal / elementCounter)
     }
 
     validateAddress(address){
@@ -22,14 +48,13 @@ class Phishing {
 
     validateName(fromName){
         let containsSpecialCharacter = this.specialCharacterRegex.test(fromName);
-        let containsEmoji = this.isEmoji(fromName);
-        console.log(containsEmoji, fromName)
+        let emojiCount = this._emojiCount(fromName);
 
-        if (containsSpecialCharacter && containsEmoji){
+        if (containsSpecialCharacter && emojiCount){
             this.scores.name = 5;
         } else if(containsSpecialCharacter){
             this.scores.name = 4;
-        } else if(containsEmoji){
+        } else if(emojiCount > 1){
             this.scores.name = 4;
         }
     }
@@ -63,7 +88,7 @@ class Phishing {
             }
         } else if(subject.includes(username)){
             this.scores.subject = 5;
-        } else if (this.isEmoji(subject)){
+        } else if (this._emojiCount(subject) > 1){
             this.scores.subject = 4;
         }
         // var result = sentiment.analyze(subject);
@@ -80,7 +105,7 @@ class Phishing {
             // Loop through all links that contain link text and a href attribute
             if (anchorTag.innerText.trim().length != 0 && anchorTag.href.trim().length != 0 && !anchorTag.href.includes('mailto')){
 
-                isValidHost = this.isValidHost(anchorTag.hostname)
+                isValidHost = this._isValidHost(anchorTag.hostname)
                 isLinkTextDisparity = this._isLinkTextDisparity(anchorTag.href, anchorTag.innerText)
                 isSenderDomainDisparity = this._isSenderDomainDisparity(senderAddress, anchorTag.hostname)
                 riskRating = this._calculateLinkScore(isSenderDomainDisparity,isLinkTextDisparity, isValidHost)
@@ -95,30 +120,34 @@ class Phishing {
             }
         })
         
-        return this.linkArray
+        // return this.linkArray
     }
 
     validateAttachments(attachments){
-
-        // attachments.forEach(attachment => {
-        //         this.attachmentArray.push({
-        //             fileName: attachment.name,
-        //             size: attachment.size,
-        //             type: attachment.type,
-        //         })
-        // })
+        attachments.forEach(attachment => {
+            this.attachmentArray.push({
+                fileName: attachment.name,
+                size: attachment.size,
+                type: attachment.type,
+                riskRating: this._fileTypeRating(attachment.name)
+            })
+        })
         
-        return this.attachmentArray
+        // return this.attachmentArray
     }
     
+    //************************************************//
+    ////// NAME/SUBJECT EVALUATION HELPER METHODS //////
+    //************************************************//
 
-    isEmoji(string){
+    _emojiCount(string){
+        let emojiCount = 0;
         for (character of emojiTree(string)){
             if(character.type == 'emoji'){
-                return true
+                emojiCount++;
             }
         } 
-        return false;
+        return emojiCount;
     }
     
     //************************************************//
@@ -137,7 +166,7 @@ class Phishing {
     }
 
     // Returns true if domain is an ip address
-    isValidHost(domain){
+    _isValidHost(domain){
         let regex = new RegExp('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$');
         let isIPAddress = regex.test(domain);
 
@@ -159,8 +188,8 @@ class Phishing {
 
     // Returns true if the sender domain ie google.com from accounts@google.com doesn't match the domains in the links
     _isSenderDomainDisparity(senderAddress, hostname){
-        let parser = require('tld-extract');
         let address = senderAddress.split('@').pop();
+
         try {
             let senderDomain = parser.parse_host(address, {allowUnknownTLD : true}).domain;
     
@@ -193,6 +222,31 @@ class Phishing {
         } else {
             return 1;
         }
+    }
+
+    //************************************************//
+    /////// ATTACHMENT EVALUATION HELPER METHODS ///////
+    //************************************************//
+
+    _fileTypeRating(fileName, safeList, somewhatSafeList){
+        let safeAttachments = ['gif','jpg','jpeg','png','tif','tiff','mpg','mpeg','mp3','wav']
+        let somewhatSafeAttachments = ['doc','pdf','pptx','xls','txt','docx','xlsx','xlsm',]
+
+        if (typeof fileName != 'undefined'){
+            let extension = fileName.split('.').pop().toLowerCase();
+            console.log('EXTENSION:',extension)
+            if (safeList.includes(extension)){
+                console.log('SAFE:',extension)
+                return 1;
+            } else if (somewhatSafeList.includes(extension)){
+                console.log('SOMEWHAT SAFE:',extension)
+                return 2;
+            } else {
+                console.log('NOT SAFE:',extension, Math.random() * (5 - 4) + 4)
+                return Math.round(Math.random() * (5 - 4) + 4);
+            }
+        }
+        return 3;
     }
 }
 

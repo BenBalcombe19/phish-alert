@@ -33,6 +33,7 @@ function startExtension(gmail) {
                 const phishingModule = require('./phishing.js');
                 let phishing = new phishingModule.Phishing();
                 let senderAddress, senderName, subject, content = "";
+                let attachments = [];
 
                 try{
                     var email = new gmail.dom.email(gmail.new.get.email_id());
@@ -46,6 +47,13 @@ function startExtension(gmail) {
                     senderAddress = emailData.from.address;
                     subject = emailData.subject;
                     content = emailData.content_html;
+                    attachments = emailData.attachments;
+
+                    if (emailData.attachments.length == 0) {
+                        console.log('getting attachments the long way')
+                        attachments = email.attachments();
+                        console.log('attachments found', email.attachments())
+                    }
 
                     if (typeof emailData.from.name !== 'undefined') {
                         if (emailData.from.name.length === 0) {
@@ -57,11 +65,13 @@ function startExtension(gmail) {
                     phishing.validateName(senderName);
                     phishing.validateSubject(subject, userEmail);
                     phishing.validateBody(content, emailData.from.address);
-                    // phishing.validateAttachments();
+                    phishing.validateAttachments(attachments);
+                    phishing.calculateOverallRating();
                     emailData.scores = phishing.scores;
                     emailData.links = phishing.linkArray;
-
+                    emailData.attachmentsRated = phishing.attachmentArray;
                     emailData.userEmail = userEmail;
+                    emailData.overallRating = phishing.overallRating;
 
                     window.dispatchEvent(new CustomEvent("emailOpened", { detail: emailData }));
 
