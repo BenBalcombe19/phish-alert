@@ -37,7 +37,7 @@
             </div>
         </div>
         
-        <i class="settings-close fa-solid fa-xmark" @click="close()"></i>
+        <i class="settings-close fa-solid fa-chevron-right" @click="close()"></i>
     </div>
 </template>
 

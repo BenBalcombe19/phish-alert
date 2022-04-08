@@ -5,12 +5,8 @@
     max-height: 0;
 
     
-    background: #888;
-    color: #fff;
+    color: #434343;
 
-    border-radius: 5px;
-    box-shadow: 0 0 5px #000;
-    
     overflow: hidden;
     transition: all .3s ease-in-out;
     
@@ -61,13 +57,17 @@
     }
     .settings-close {
         position: absolute;
-        top: 0;
-        right: 0;
+        bottom: 0;
+        left: 0;
 
-        margin: 10px;
+        margin: 2px;
         
         font-size: 15px;
+
+        color: #999;
         
         cursor: pointer;
+
+        transform: rotate(-45deg);
     }
 }
