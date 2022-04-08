@@ -8,7 +8,10 @@
 
                 <label class="switch">
                     <input type="checkbox" v-model="warningActive">
-                    <span class="slider round"></span>
+                    <div class="slider round">
+                        <span class="text on">ON</span>
+                        <span class="text off">OFF</span>
+                    </div>
                 </label>
                 <!-- <input class="setting-value" type="checkbox" v-model="warningActive"> -->
             </div>

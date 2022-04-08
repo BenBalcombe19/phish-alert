@@ -1,5 +1,6 @@
 $extension-green: #1aa260;
 $extension-blue: #4C8BF5;
+$extension-red: #ca2222;
 
 body {
     width: 700px;
@@ -13,10 +14,14 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #f7f7f7;
-    padding: 35px;
+    padding: 60px 35px 35px 35px;
 
     .title {
-        align-self: flex-start;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        margin: 20px;
 
         color: $extension-green;
 
@@ -37,67 +42,94 @@ body {
 
         margin: 20px;
 
+
         .switch {
             position: relative;
             display: inline-block;
-
-            width: 60px;
+            width: 70px;
             height: 34px;
-
+        }
+          
+        .switch input {
+            display:none;
+        }
+        
+        .slider {
+            position: absolute;
             cursor: pointer;
-            
-            input { 
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-            
-            .slider {
-                position: absolute;
-                cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #ccc;
-                -webkit-transition: .4s;
-                transition: .4s;
-    
-                &:before{
-                    position: absolute;
-                    content: "";
-                    height: 26px;
-                    width: 26px;
-                    left: 4px;
-                    bottom: 4px;
-                    background-color: white;
-                    -webkit-transition: .4s;
-                    transition: .4s;
-                }
-                
-                &.round{
-                    border-radius: 34px;
-    
-                    &:before{
-                        border-radius: 50%;
-                    }
-                }
-            }
-          }
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ca2222;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+        
+        input:checked + .slider {
+            background-color: $extension-green;
+        }
+        
+        input:focus + .slider {
+            box-shadow: 0 0 1px $extension-blue;
+        }
+        
+        input:checked + .slider:before {
+            -webkit-transform: translateX(35px);
+            -ms-transform: translateX(35px);
+            transform: translateX(35px);
+        }
+        
+        .on{
+            display: none;
+        }
+        
+        .text{
+            color: white;
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            font-size: 10px;
+            font-family: Verdana, sans-serif;
+        }
 
-          input:checked + .slider {
-          background-color: $extension-blue;
-          }
-          
-          input:focus + .slider {
-          box-shadow: 0 0 1px $extension-blue;
-          }
-          
-          input:checked + .slider:before {
-              -webkit-transform: translateX(26px);
-              -ms-transform: translateX(26px);
-              transform: translateX(26px);
-          }
+        .on {
+            left: 34%;
+        }
+
+        .off{
+            left: 65%;
+        }
+        
+        input:checked+ .slider .on{
+            display: block;
+        }
+        
+        input:checked + .slider .off{
+            display: none;
+        }
+        
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
 
           .settings-cog-main{
             color: #888;
@@ -109,43 +141,7 @@ body {
             cursor: pointer;
           }
     }
-
-      
-    
-    button {
-        background: #de5246;
-        width: 80%;
-        font-size: 14px;
-        font-weight: 700;
-        text-transform: uppercase;
-        line-height: 1em;
-        border: none;
-        border-radius: 4px;
-        margin-bottom: 10px;        
-        padding: 6px 24px;
-        color: #fff;
-    
-        &:focus {
-            outline: 0;
-        }
-        &:hover {
-            cursor: pointer;
-        }
-        &.state-save {
-            background: #2c3e50;
-            color: #fff;
-            width: 100%;
-            padding: 8px 24px;
-    
-            &:active {
-                background: darken(#2c3e50, 5%);
-            }
-            &:focus {
-                box-shadow: 0 0 0 2px lighten(#2c3e50, 20%);
-            }
-        }
-    }
-    
+ 
     .table-title{
         align-self: flex-start;
 
@@ -234,7 +230,7 @@ body {
                         color: $extension-green;
                     }
                     .fa-circle-xmark{
-                        color: #e90000;
+                        color: $extension-red;
                     }
                 }
 

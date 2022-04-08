@@ -2,16 +2,19 @@
     <div class="popup-wrapper">
         <h1 v-if="isData" class="title">Current Email</h1>
         
-        <h1 v-else class="title center">No Email Found</h1>
+        <h1 v-else class="title center">Sorry, no email found</h1>
 
         <span class="options-wrapper">
             <settings :show="settings.show" :title="settings.title" @close-popup="settings.show = false"></settings>
             
             <i class="settings-cog-main fa-solid fa-gear" @click="settings.show = !settings.show"></i>
-            
+
             <label class="switch">
                 <input type="checkbox" v-model="extensionActive">
-                <span class="slider round"></span>
+                <div class="slider round">
+                    <span class="text on">ON</span>
+                    <span class="text off">OFF</span>
+                </div>
             </label>
             
         </span>
@@ -153,7 +156,7 @@ export default {
             name:{
                 show: false,
                 title: 'Useful Tips',
-                data: ['Does the name contain any unusual characters ie  $ , % , @ , * , etc? This is also a cause for concern.']
+                data: ['Does the name contain any unusual characters ie  $ , % , @ , * , etc? This is a cause for concern.']
             },
             subject:{
                 show: false,
@@ -233,15 +236,6 @@ export default {
         },
     },
     methods: {
-        setActive(active) {
-            this.active = active;
-            chrome.storage.local.set({
-                toggleSitesActive: active
-            }, () => {});
-            // chrome.browserAction.setIcon({
-            //     path: this.icons[active ? 'active' : 'inactive']
-            // });
-        },
         getData(){
             chrome.storage.local.get(['emailData','extensionActive'], (data) => {
                 this.currentMailData = data.emailData;
