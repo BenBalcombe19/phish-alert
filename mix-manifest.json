@@ -5,5 +5,10 @@
     "/dist/js/gmailJSLoader.js": "/dist/js/gmailJSLoader.js",
     "/dist/js/background.js": "/dist/js/background.js",
     "/dist/js/popup.js": "/dist/js/popup.js",
-    "/dist/css/popup.css": "/dist/css/popup.css"
+    "/dist/css/popup.css": "/dist/css/popup.css",
+    "/dist/icons/.DS_Store": "/dist/icons/.DS_Store",
+    "/dist/icons/icon-128x128.png": "/dist/icons/icon-128x128.png",
+    "/dist/icons/icon-16x16.png": "/dist/icons/icon-16x16.png",
+    "/dist/icons/icon-48x48-off.png": "/dist/icons/icon-48x48-off.png",
+    "/dist/icons/icon-48x48.png": "/dist/icons/icon-48x48.png"
 }
