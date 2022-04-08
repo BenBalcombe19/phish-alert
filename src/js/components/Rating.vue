@@ -1,10 +1,10 @@
 <template>
     <div v-if="riskValue" class="rating">
-        <i class="fa-solid fa-circle circle color" :class="riskClass(1)"></i>
-        <i class="fa-solid fa-circle circle color" :class="riskClass(2)"></i>
-        <i class="fa-solid fa-circle circle no-color" :class="riskClass(3)"></i>
-        <i class="fa-solid fa-circle circle no-color" :class="riskClass(4)"></i>
-        <i class="fa-solid fa-circle circle no-color" :class="riskClass(5)"></i>
+        <i class="fa-solid fa-circle circle" :class="riskClass(1)"></i>
+        <i class="fa-solid fa-circle circle" :class="riskClass(2)"></i>
+        <i class="fa-solid fa-circle circle" :class="riskClass(3)"></i>
+        <i class="fa-solid fa-circle circle" :class="riskClass(4)"></i>
+        <i class="fa-solid fa-circle circle" :class="riskClass(5)"></i>
     </div>
 </template>
 

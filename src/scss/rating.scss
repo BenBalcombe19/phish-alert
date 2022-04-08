@@ -1,22 +1,33 @@
 .rating{
+    .circle{
+        border-radius: 50px;
+        // box-shadow: 0 0 2px #000;
+        margin-right: 2px;
+    }
     
     .dark-green{
         color:$extension-green;
+        box-shadow: 0 0 2px $extension-green;
     }
     .light-green{
         color:#9ac085;
+        box-shadow: 0 0 2px #9acd32;
     }
     .yellow{
         color:#eed202;
+        box-shadow: 0 0 2px #eed202;
     }
     .orange{
-        color:#ff9912;
+        color:#fa7f3d;
+        box-shadow: 0 0 2px #fa7f3d;
     }
     .red{
         color:$extension-red;
+        box-shadow: 0 0 2px $extension-red;
     }
     .gray{
-        color:gray;
+        box-shadow: 0 0 2px #888;
+        color:#fff;
     }
     
 }
