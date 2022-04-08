@@ -13,7 +13,7 @@ class Phishing {
         }
         this.linkArray = [];
         this.attachmentArray = [];
-        this.specialCharacterRegex = new RegExp('[!#$+:;%^&*(){}|<>\-]');
+        this.specialCharacterRegex = new RegExp('[!#$+.:;%^&*(){}|<>\-]');
     }
 
     validateAddress(address){
@@ -23,6 +23,7 @@ class Phishing {
     validateName(fromName){
         let containsSpecialCharacter = this.specialCharacterRegex.test(fromName);
         let containsEmoji = this.isEmoji(fromName);
+        console.log(containsEmoji, fromName)
 
         if (containsSpecialCharacter && containsEmoji){
             this.scores.name = 5;
@@ -112,12 +113,11 @@ class Phishing {
     
 
     isEmoji(string){
-        emojiTree(string).forEach((character) => {
-            if(character.type === 'emoji'){
+        for (character of emojiTree(string)){
+            if(character.type == 'emoji'){
                 return true
             }
-        })
-
+        } 
         return false;
     }
     
