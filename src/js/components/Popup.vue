@@ -172,11 +172,11 @@ export default {
                 title: 'Attachment Information',
                 data:['Link Text - This is the text of the link displayed to the user e.g "Click Here"','Link URL - This is the actual URL that you will be directed to when you click the link text e.g "https://google.com"',
                     'Domain Match - This refers to whether the domain of the Link URL (Highlighted in Blue) matches the domain of the sender address e.g no-reply@google.com, the domain is google.com']
+            },
+            icons: {
+                active: 'icons/icon-48x48.png',
+                inactive: 'icons/icon-48x48-off.png'
             }
-            // icons: {
-            //     active: 'images/icon-48x48.png',
-            //     inactive: 'images/icon-48x48-off.png'
-            // }
         }
     },
     components: {
@@ -225,8 +225,11 @@ export default {
         },
         extensionActive: function(newVal){
             chrome.storage.local.set({
-                extensionActive: this.extensionActive
+                extensionActive: newVal
             }, () => {});
+            chrome.action.setIcon({
+                path: this.icons[newVal ? 'active' : 'inactive']
+            });
         },
     },
     methods: {

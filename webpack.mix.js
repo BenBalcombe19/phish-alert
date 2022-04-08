@@ -8,6 +8,7 @@ mix.setPublicPath('./')
     .js('src/js/gmailJSLoader.js', 'dist/js')
     .js('src/js/background.js', 'dist/js')
     .js('src/js/popup.js', 'dist/js').vue()
+    .copy('src/icons/', 'dist/icons')
     .options({
         processCssUrls:false
     });
