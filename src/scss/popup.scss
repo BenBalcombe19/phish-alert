@@ -14,21 +14,38 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #f7f7f7;
-    padding: 60px 35px 35px 35px;
+    padding: 80px 35px 35px 35px;
+
+    transition: all .3s ease-in-out;
+
+    &.no-email-settings-open{
+        padding-top: 195px;
+    }
 
     .title {
+        display: flex;
         position: absolute;
         top: 0;
-        left: 0;
+        left: 14px;
 
         margin: 20px;
-
-        color: $extension-green;
-
+        padding: 13px;
+        
+        color: #1aa260;
+        background: #eee;
+        
         font-size: 24px;
+        
+        border-radius: 5px;
+        box-shadow: 0 0 2px #000;
 
         &.center{
             align-self: center;
+        }
+
+        .title-text{
+            font-weight: bold;
+            margin-right: 10px;
         }
     }
 
@@ -40,7 +57,13 @@ body {
         top: 0;
         right: 0;
 
-        margin: 20px;
+        margin: 20px 34px 0 0;
+        padding: 10px;
+
+        background-color: #eee;
+
+        border-radius: 5px;
+        box-shadow: 0 0 2px #000;
 
 
         .switch {
@@ -131,14 +154,19 @@ body {
         }
 
 
-          .settings-cog-main{
+          .menu-button{
             color: #888;
 
-            margin: 0 10px;
+            margin-right: 10px;
+            max-height: 32px;
 
             font-size: 31px;
     
             cursor: pointer;
+
+            &:hover{
+                color: lighten(#888, 10%);
+            }
           }
     }
  
@@ -160,6 +188,7 @@ body {
 
             &:hover{
                 cursor: pointer;
+                color: lighten($extension-blue, 10%);
             }
         }
     }
@@ -241,11 +270,8 @@ body {
                 abbr[title] {
                     text-decoration: none;
 
-                    .domain-highlight{
-                        background-color: $extension-blue;
-                        color: #fff;
-                        border-radius: 3px;
-                        padding: 1px 3px;
+                    .text-highlight{
+                        color: $extension-blue;
                         font-weight: bold;
                     }
                 }
@@ -253,6 +279,7 @@ body {
                 .learn-button{
                     color: $extension-blue;
                     &:hover{
+                        color: lighten($extension-blue, 10%);
                         cursor: pointer;
                     }
                 }
