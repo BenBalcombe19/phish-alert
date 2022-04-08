@@ -10,6 +10,11 @@ window.addEventListener('no-data', function(event){
     chrome.runtime.sendMessage({sender:'content-script',type: 'no-data', data: event.detail});
 }, false)
 
+// Listen for the warning-given event and let the background script know the date time of the warning
+window.addEventListener('warning-given', function(event){
+    chrome.runtime.sendMessage({sender:'content-script',type: 'warning-given', data: event.detail});
+}, false)
+
 // Listen for the get settings data event from extension.js and send the request to the background script
 // Then await the response and send a new custom event telling the extension.js the data
 // This is run when the extension is loaded
