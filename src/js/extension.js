@@ -50,9 +50,7 @@ function startExtension(gmail) {
                     attachments = emailData.attachments;
 
                     if (emailData.attachments.length == 0) {
-                        console.log('getting attachments the long way')
                         attachments = email.attachments();
-                        console.log('attachments found', email.attachments())
                     }
 
                     if (typeof emailData.from.name !== 'undefined') {
@@ -82,6 +80,9 @@ function startExtension(gmail) {
                                 settings.timeOfLastWarning = new Date(); // Set time of last warning to now for the current content script
 
                                 gmail.tools.add_modal_window('Potential Phishing Attempt', 'Do you want to continue?', () => {
+                                    gmail.tools.remove_modal_window();
+                                }, () => {
+                                    window.history.back();
                                     gmail.tools.remove_modal_window();
                                 });
                             }
