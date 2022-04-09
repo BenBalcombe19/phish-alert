@@ -142,7 +142,7 @@ class Phishing {
 
     _emojiCount(string){
         let emojiCount = 0;
-        for (character of emojiTree(string)){
+        for (let character of emojiTree(string)){
             if(character.type == 'emoji'){
                 emojiCount++;
             }
@@ -228,17 +228,17 @@ class Phishing {
     /////// ATTACHMENT EVALUATION HELPER METHODS ///////
     //************************************************//
 
-    _fileTypeRating(fileName, safeList, somewhatSafeList){
+    _fileTypeRating(fileName){
         let safeAttachments = ['gif','jpg','jpeg','png','tif','tiff','mpg','mpeg','mp3','wav']
         let somewhatSafeAttachments = ['doc','pdf','pptx','xls','txt','docx','xlsx','xlsm',]
 
         if (typeof fileName != 'undefined'){
             let extension = fileName.split('.').pop().toLowerCase();
             console.log('EXTENSION:',extension)
-            if (safeList.includes(extension)){
+            if (safeAttachments.includes(extension)){
                 console.log('SAFE:',extension)
                 return 1;
-            } else if (somewhatSafeList.includes(extension)){
+            } else if (somewhatSafeAttachments.includes(extension)){
                 console.log('SOMEWHAT SAFE:',extension)
                 return 2;
             } else {

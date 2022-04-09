@@ -45,9 +45,6 @@ function startExtension(gmail) {
                     console.log("EMAIL DATA:", emailData);
 
                     senderAddress = emailData.from.address;
-                    subject = emailData.subject;
-                    content = emailData.content_html;
-                    attachments = emailData.attachments;
 
                     if (emailData.attachments.length == 0) {
                         attachments = email.attachments();
@@ -61,10 +58,11 @@ function startExtension(gmail) {
                     senderName = emailData.from.name;
 
                     phishing.validateName(senderName);
-                    phishing.validateSubject(subject, userEmail);
-                    phishing.validateBody(content, emailData.from.address);
-                    phishing.validateAttachments(attachments);
+                    phishing.validateSubject(emailData.subject, userEmail);
+                    phishing.validateBody(emailData.content_html, emailData.from.address);
+                    phishing.validateAttachments(emailData.attachments);
                     phishing.calculateOverallRating();
+
                     emailData.riskRatings = phishing.riskRatings;
                     emailData.links = phishing.linkArray;
                     emailData.attachmentsRated = phishing.attachmentArray;
@@ -75,7 +73,7 @@ function startExtension(gmail) {
 
                     if (settings.warningActive) {
                         if (warningTimerElapsed(settings.warningTimeout, settings.timeOfLastWarning)){
-                            if (!validRatings(settings.warningThreshold, emailData.riskRatings,emailData.links)){
+                            if (!validRatings(settings.warningThreshold, emailData.riskRatings,emailData.links, emailData.attachmentsRated)){
                                 window.dispatchEvent(new CustomEvent("warning-given", { detail: new Date() })); // Set the time of last warning to local storage for anytime the script is reloadeds
                                 settings.timeOfLastWarning = new Date(); // Set time of last warning to now for the current content script
 
@@ -98,7 +96,7 @@ function startExtension(gmail) {
     });
 }
 
-function validRatings(threshold, riskRatings, links){
+function validRatings(threshold, riskRatings, links, attachments){
     let valid = true;
 
     Object.values(riskRatings).forEach((rating) => {
@@ -107,12 +105,20 @@ function validRatings(threshold, riskRatings, links){
         }
     });
 
-    links.forEach((link) => {
+    for (let link of links){
         if (link.riskRating >= threshold){
             valid = false;
+            break;
         }
-    })
+    }
 
+    for (let attachment of attachments){
+        if (attachment.riskRating >= threshold){
+            valid = false;
+            break;
+        }
+    }
+    
     return valid;
 }
 

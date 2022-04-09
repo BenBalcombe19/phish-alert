@@ -36,13 +36,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
 })
 
 function sendMessage(sender, type, data, callback){
-    if(chrome.runtime.lastError) {
-        setTimeout(() => {
-            console.log('in timeout')
-        }, 1000);
-    } else {
-        chrome.runtime.sendMessage({sender: sender, type: type, data: data}, callback);
-    }
+    chrome.runtime.sendMessage({sender: sender, type: type, data: data}, callback);
 }
 
 
