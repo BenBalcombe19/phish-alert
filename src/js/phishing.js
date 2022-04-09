@@ -6,7 +6,7 @@ const parser = require('tld-extract');
 class Phishing {
     constructor(){
         this.overallRating = 1;
-        this.scores = {
+        this.riskRatings = {
             address: 1,
             name: 1,
             subject: 1,
@@ -20,7 +20,7 @@ class Phishing {
         let elementCounter = 0;
         let riskTotal = 0;
 
-        Object.values(this.scores).forEach(value => {
+        Object.values(this.riskRatings).forEach(value => {
             riskTotal += value;
             elementCounter++;
         })
@@ -51,11 +51,11 @@ class Phishing {
         let emojiCount = this._emojiCount(fromName);
 
         if (containsSpecialCharacter && emojiCount){
-            this.scores.name = 5;
+            this.riskRatings.name = 5;
         } else if(containsSpecialCharacter){
-            this.scores.name = 4;
+            this.riskRatings.name = 4;
         } else if(emojiCount > 1){
-            this.scores.name = 4;
+            this.riskRatings.name = 4;
         }
     }
     
@@ -74,22 +74,22 @@ class Phishing {
     
         if (containsSpecialCharacter){
             if (urgencyCounter < 2){
-                this.scores.subject = 4;
+                this.riskRatings.subject = 4;
             }  else {
-                this.scores.subject = 5;
+                this.riskRatings.subject = 5;
             }
         } else  if(urgencyCounter != 0){
             if (urgencyCounter == 1){
-                this.scores.subject = 3;
+                this.riskRatings.subject = 3;
             } else if (urgencyCounter == 2){
-                this.scores.subject = 4;
+                this.riskRatings.subject = 4;
             } else {
-                this.scores.subject = 5;
+                this.riskRatings.subject = 5;
             }
         } else if(subject.includes(username)){
-            this.scores.subject = 5;
+            this.riskRatings.subject = 5;
         } else if (this._emojiCount(subject) > 1){
-            this.scores.subject = 4;
+            this.riskRatings.subject = 4;
         }
         // var result = sentiment.analyze(subject);
         // console.log("Sentiment result:",result);
@@ -108,7 +108,7 @@ class Phishing {
                 isValidHost = this._isValidHost(anchorTag.hostname)
                 isLinkTextDisparity = this._isLinkTextDisparity(anchorTag.href, anchorTag.innerText)
                 isSenderDomainDisparity = this._isSenderDomainDisparity(senderAddress, anchorTag.hostname)
-                riskRating = this._calculateLinkScore(isSenderDomainDisparity,isLinkTextDisparity, isValidHost)
+                riskRating = this._calculateLinkRating(isSenderDomainDisparity,isLinkTextDisparity, isValidHost)
 
                 this.linkArray.push({
                     href: anchorTag.href,
@@ -213,8 +213,8 @@ class Phishing {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    // Returns risk score
-    _calculateLinkScore(isSenderDomainDisparity, isLinkTextDisparity, isValidHost){
+    // Returns risk rating
+    _calculateLinkRating(isSenderDomainDisparity, isLinkTextDisparity, isValidHost){
         if (isLinkTextDisparity || !isValidHost){
             return 5;
         } else if (isSenderDomainDisparity){

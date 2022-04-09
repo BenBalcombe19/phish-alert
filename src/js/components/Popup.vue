@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="cell">Sender Address</div>
                 <div class="cell value"><abbr :title="currentMailData.from.address" v-html="textHighlight(currentMailData.from.address, currentMailData.from.address.split('@').pop())">{{currentMailData.from.address}}</abbr></div>
-                <div class="cell"><rating :riskValue="fromAddressScore"></rating></div>
+                <div class="cell"><rating :riskValue="fromAddressRating"></rating></div>
                 <div class="cell">
                     <span @click="address.show = ! address.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
@@ -51,7 +51,7 @@
             <div class="row">
                 <div class="cell">Sender Name</div>
                 <div class="cell value"><abbr :title="currentMailData.from.name">{{currentMailData.from.name}}</abbr></div>
-                <div class="cell"><rating :riskValue="fromNameScore"></rating></div>
+                <div class="cell"><rating :riskValue="fromNameRating"></rating></div>
                 <div class="cell">
                     <span @click="name.show = !name.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
@@ -62,7 +62,7 @@
             <div class="row">
                 <div class="cell">Subject</div>
                 <div class="cell value"><abbr :title="currentMailData.subject">{{currentMailData.subject}}</abbr></div>
-                <div class="cell"><rating :riskValue="subjectScore"></rating></div>
+                <div class="cell"><rating :riskValue="subjectRating"></rating></div>
                 <div class="cell">
                     <span @click="subject.show = ! subject.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">Learn More <i class="fa-solid fa-circle-info"></i></span>
                 </div>
@@ -208,14 +208,14 @@ export default {
         // subjectText(){
         //     return this.isData ? this.currentMailData.subject : 'No Information Found';
         // },
-        fromAddressScore(){
-            return this.isData ? this.currentMailData.scores.address : 'No Information Found';
+        fromAddressRating(){
+            return this.isData ? this.currentMailData.riskRatings.address : 'No Information Found';
         },
-        fromNameScore(){
-            return this.isData ? this.currentMailData.scores.name : 'No Information Found'; 
+        fromNameRating(){
+            return this.isData ? this.currentMailData.riskRatings.name : 'No Information Found'; 
         },
-        subjectScore(){
-            return this.isData ? this.currentMailData.scores.subject : 'No Information Found';
+        subjectRating(){
+            return this.isData ? this.currentMailData.riskRatings.subject : 'No Information Found';
         },
         infoData(){
             return {

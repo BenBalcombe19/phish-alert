@@ -67,7 +67,7 @@ function startExtension(gmail) {
                     phishing.validateBody(content, emailData.from.address);
                     phishing.validateAttachments(attachments);
                     phishing.calculateOverallRating();
-                    emailData.scores = phishing.scores;
+                    emailData.riskRatings = phishing.riskRatings;
                     emailData.links = phishing.linkArray;
                     emailData.attachmentsRated = phishing.attachmentArray;
                     emailData.userEmail = userEmail;
@@ -77,7 +77,7 @@ function startExtension(gmail) {
 
                     if (settings.warningActive) {
                         if (warningTimerElapsed(settings.warningTimeout, settings.timeOfLastWarning)){
-                            if (!validScores(settings.warningThreshold, emailData.scores,emailData.links)){
+                            if (!validRatings(settings.warningThreshold, emailData.riskRatings,emailData.links)){
                                 window.dispatchEvent(new CustomEvent("warning-given", { detail: new Date() })); // Set the time of last warning to local storage for anytime the script is reloadeds
                                 settings.timeOfLastWarning = new Date(); // Set time of last warning to now for the current content script
 
@@ -97,11 +97,11 @@ function startExtension(gmail) {
     });
 }
 
-function validScores(threshold, scores, links){
+function validRatings(threshold, riskRatings, links){
     let valid = true;
 
-    Object.values(scores).forEach((score) => {
-        if (score >= threshold){
+    Object.values(riskRatings).forEach((rating) => {
+        if (rating >= threshold){
             valid = false;
         }
     });
@@ -126,9 +126,4 @@ function warningTimerElapsed(warningTimeout, timeOfLastWarning){
         }
     }
     return false;
-    // const now1 = luxon.DateTime.now();
-    // const now2 = luxon.DateTime.now();
-
-    // console.log('DIFF',now1.diff(now2).values.minutes)
-    // timeNow - timeOfLastWarning > settings.warningTimeout
 }
