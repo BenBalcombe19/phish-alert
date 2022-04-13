@@ -1,11 +1,14 @@
 <template>
-    <div class="popup-wrapper" :class="{ 'no-email-settings-open': (settings.show && (!isData || !extensionActive))}">
-        <div v-if="isData && extensionActive" class="title">
-            <div class=title-text>Email Rating:</div>
+    <div class="popup-wrapper" :class="{ 'no-email-settings-open': (settings.show && (!isData || !extensionActive || !isGmail))}">
+        <!-- <div v-if="!loaded" class="loading"> loading...</div> -->
+        <div v-if="!isGmail" class="title-no-email">Gmail not detected...</div>
+
+        <div v-else-if="isData && extensionActive" class="title-email">
+            <div class=title-email-text>Email Rating:</div>
             <rating v-if="isData" :riskValue="currentMailData.overallRating"></rating>
         </div>
         
-        <h1 v-else class="title center">Sorry, no email found</h1>
+        <div v-else class="title-no-email">Sorry, no email found</div>
 
         
         <span class="options-wrapper">
@@ -28,8 +31,8 @@
         <info :show="mainInfo.show" :title="mainInfo.title" :data="mainInfo.data" :inTable="false" @close-popup="mainInfo.show = false"></info>
         
         <!-- EMAIL DETAILS TABLE -->
-        <div v-if="isData && extensionActive" class="table-title">General Details:</div>
-        <div v-if="isData && extensionActive" class="table">
+        <div v-if="showEmailDetails" class="table-title">General Details:</div>
+        <div v-if="showEmailDetails" class="table">
             <div class="row header" :class="{ disabled: !extensionActive}">
                 <div class="cell">Details</div>
                 <div class="cell value">Content</div>
@@ -73,14 +76,14 @@
         </div>
 
         <!-- LINKS TABLE -->
-        <div v-if="isData && extensionActive && currentMailData.links.length != 0" class="table-title">Link Details 
+        <div v-if="showLinks" class="table-title">Link Details 
             <span @click="linkInfo.show = ! linkInfo.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">
                 Learn More <i class="fa-solid fa-circle-info"></i>
             </span>
         </div>
         <info :show="linkInfo.show" :title="linkInfo.title" :data="linkInfo.data" :inTable="false" @close-popup="linkInfo.show = false"></info>
 
-        <div v-if="isData && extensionActive && currentMailData.links.length != 0" class="table link-table">
+        <div v-if="showLinks" class="table link-table">
 
             <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell">Link Text</div>
@@ -103,14 +106,14 @@
         </div>
 
         <!-- ATTACHMENTS TABLE -->
-        <div v-if="isData && extensionActive && currentMailData.attachmentsRated.length != 0" class="table-title">Attachment(s) Details 
+        <div v-if="showAttachments" class="table-title">Attachment(s) Details 
             <span @click="attachmentInfo.show = ! attachmentInfo.show" class="learn-button" :class="{ 'disabled-text': !extensionActive}">
                 Learn More <i class="fa-solid fa-circle-info"></i>
             </span>
         </div>
         <info :show="attachmentInfo.show" :title="attachmentInfo.title" :data="attachmentInfo.data" :inTable="false" @close-popup="attachmentInfo.show = false"></info>
 
-        <div v-if="isData && extensionActive && currentMailData.attachmentsRated.length != 0" class="table link-table">
+        <div v-if="showAttachments" class="table link-table">
 
             <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell">File Name</div>
@@ -145,9 +148,10 @@ export default {
     data() {
         return {
             extensionActive: false,
-            list: [],
             currentMailData: {},
             isData: false,
+            isGmail: false,
+            loaded: false,
             mainInfo:{
                 show: false,
                 title: 'General Information',
@@ -199,15 +203,6 @@ export default {
         settings
     },
     computed: {
-        // fromAddressText(){
-        //     return this.isData ? this.currentMailData.from.address : 'No Information Found';
-        // },
-        // fromNameText(){
-        //     return this.isData ? this.currentMailData.from.name : 'No Information Found'; 
-        // },
-        // subjectText(){
-        //     return this.isData ? this.currentMailData.subject : 'No Information Found';
-        // },
         fromAddressRating(){
             return this.isData ? this.currentMailData.riskRatings.address : 'No Information Found';
         },
@@ -217,11 +212,15 @@ export default {
         subjectRating(){
             return this.isData ? this.currentMailData.riskRatings.subject : 'No Information Found';
         },
-        infoData(){
-            return {
-                
-            }
-        }
+        showEmailDetails(){
+            return this.isData && this.extensionActive && this.isGmail;
+        },
+        showLinks(){
+            return this.isData && this.extensionActive && this.isGmail && this.currentMailData.links.length != 0;
+        },
+        showAttachments(){
+            return this.isData && this.extensionActive && this.isGmail && this.currentMailData.attachmentsRated.length != 0;
+        },
     },
     watch : {
         currentMailData: {
@@ -251,6 +250,7 @@ export default {
             chrome.storage.local.get(['emailData','extensionActive'], (data) => {
                 this.currentMailData = data.emailData;
                 this.extensionActive = data.extensionActive;
+                this.loaded
             });    
         },
         textHighlight(mainText,highlightText){
@@ -283,10 +283,11 @@ export default {
             try {
                 let domain = parser.parse_host(url, {allowUnknownTLD : true}).domain;
                 if (!domain.includes('google.com/mail')){
-                    setTimeout(() => {
-                        this.isData = false
-                        this.currentMailData = {}
-                    },300)
+                    this.isGmail = false
+                    // setTimeout(() => {
+                    // },300)
+                } else {
+                    this.isGmail = true;
                 }
                 } catch{
                     console.log('Tab URL failed')

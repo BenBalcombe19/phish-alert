@@ -99,7 +99,7 @@ class Phishing {
         let AnchorTagArray = this._getAnchorTags(body);
 
         AnchorTagArray.forEach(anchorTag => {
-            let isValidHost,isLinkTextDisparity,isSenderDomainDisparity = false;
+            let isValidHost,isLinkTextDisparity,isSenderDomainDisparity;
             let riskRating = 1;
 
             // Loop through all links that contain link text and a href attribute

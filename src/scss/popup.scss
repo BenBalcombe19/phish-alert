@@ -22,7 +22,7 @@ body {
         padding-top: 195px;
     }
 
-    .title {
+    .title-email {
         display: flex;
         position: absolute;
         top: 0;
@@ -39,14 +39,23 @@ body {
         border-radius: 5px;
         box-shadow: 0 0 2px #000;
 
-        &.center{
-            align-self: center;
-        }
-
-        .title-text{
+        .title-email-text{
             font-weight: bold;
             margin-right: 10px;
         }
+    }
+
+    .title-no-email{
+        position: absolute;
+        top: 14px;
+        left: 14px;
+
+        margin: 20px;
+        
+        color: #1aa260;
+        
+        font-size: 24px;
+        font-weight: bold;
     }
 
     .options-wrapper{
