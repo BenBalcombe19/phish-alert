@@ -63,21 +63,18 @@ export default {
             chrome.storage.local.set({
                 warningActive: this.warningActive
             }, () => {
-                console.log('setting warningActive', newVal)
             });
         },
         warningThreshold: function(newVal){
             chrome.storage.local.set({
                 warningThreshold: this.warningThreshold
             }, () => {
-                console.log('setting warningThreshold', newVal)
             });
         },
         warningTimeout: function(newVal){
             chrome.storage.local.set({
                 warningTimeout: this.warningTimeout
             }, () => {
-                console.log('setting warningTimeout', newVal)
             });
         },
     },
