@@ -1,12 +1,10 @@
 {
-    "name": "Anti-Phishing Email Extension",
-    "description": "An extension to aid email phishing detection",
+    "name": "Phish Alert",
+    "description": "A cyber security awareness, educator and monitoring chrome extension for Gmail to provide that extra layer of assurance.",
     "manifest_version": 3,
     "version": "1.0.0",
     "permissions": [
-        "storage",
-        "activeTab",
-        "tabs"
+        "storage"
     ],
     "icons":{
         "16": "./icons/icon-16x16.png",
@@ -31,11 +29,10 @@
             "js/gmailJsLoader.js",
             "js/extension.js"
         ],
-        "matches": ["<all_urls>"]
+        "matches": ["*://mail.google.com/*"]
     }],
     "host_permissions": [
-        "http://*/",
-        "https://*/*"
+        "*://mail.google.com/*"
     ],
 
     "action": {
