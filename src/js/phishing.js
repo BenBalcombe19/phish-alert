@@ -234,15 +234,12 @@ class Phishing {
 
         if (typeof fileName != 'undefined'){
             let extension = fileName.split('.').pop().toLowerCase();
-            console.log('EXTENSION:',extension)
+            
             if (safeAttachments.includes(extension)){
-                console.log('SAFE:',extension)
                 return 1;
             } else if (somewhatSafeAttachments.includes(extension)){
-                console.log('SOMEWHAT SAFE:',extension)
                 return 2;
             } else {
-                console.log('NOT SAFE:',extension, Math.random() * (5 - 4) + 4)
                 return Math.round(Math.random() * (5 - 4) + 4);
             }
         }
