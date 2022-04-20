@@ -13,20 +13,18 @@ const loaderId = setInterval(() => {
 
 // actual extension-code
 function startExtension(gmail) {
-    console.log("Extension loading...");
+    // console.log("Extension loading...");
     window.gmail = gmail;
     var settings;
-    let getSettingsDataEvent = new CustomEvent("get-settings-data");
-    window.dispatchEvent(getSettingsDataEvent);
+    window.dispatchEvent(new CustomEvent("get-settings-data"));
 
     window.addEventListener('settings-retrieved', function(event){
         settings = event.detail
-        console.log('SETTINGS', settings)
     }, false)
 
     gmail.observe.on("load", () => {
         const userEmail = gmail.get.user_email();
-        console.log("Hello, " + userEmail + ". This is your extension talking!");
+        // console.log("Hello, " + userEmail + ". This is your extension talking!");
 
         gmail.observe.on("view_email", (emailID) => {
             if (settings.extensionActive){
@@ -40,7 +38,7 @@ function startExtension(gmail) {
                 }
 
                 if (emailData) {
-                    console.log("EMAIL DATA:", emailData);
+                    // console.log("EMAIL DATA:", emailData);
 
                     // Another means to get the senders name to fix issue with name not being found
                     if (typeof emailData.from.name !== 'undefined') {
@@ -66,10 +64,11 @@ function startExtension(gmail) {
                     if (settings.warningActive) {
                         if (warningTimerElapsed(settings.warningTimeout, settings.timeOfLastWarning)){
                             if (!validRatings(settings.warningThreshold, emailData.riskRatings,emailData.links, emailData.attachmentsRated)){
-                                window.dispatchEvent(new CustomEvent("warning-given", { detail: new Date() })); // Set the time of last warning to local storage for anytime the script is reloadeds
-                                settings.timeOfLastWarning = new Date(); // Set time of last warning to now for the current content script
+                                let dateNow = new Date();
+                                window.dispatchEvent(new CustomEvent("warning-given", { detail: dateNow })); // Set the time of last warning to local storage for anytime the script is reloaded
+                                settings.timeOfLastWarning = dateNow; // Set time of last warning to now for the current content script
 
-                                gmail.tools.add_modal_window('Potential phishing attempt, please check out the extension in the top right of your screen for more information ', 'Do you wish to continue?', () => {
+                                gmail.tools.add_modal_window('Potential phishing attempt', 'Do you wish to continue?', () => {
                                     gmail.tools.remove_modal_window();
                                 }, () => {
                                     window.history.back();
@@ -80,7 +79,7 @@ function startExtension(gmail) {
                     }
 
                 } else {
-                    console.log("EMAIL DATA NOT LOADED YET")
+                    // console.log("EMAIL DATA NOT LOADED YET")
                     window.dispatchEvent(new CustomEvent("no-data", { detail: emailData }));
                 }
             }
@@ -115,8 +114,8 @@ function validRatings(threshold, riskRatings, links, attachments){
 }
 
 function warningTimerElapsed(warningTimeout, timeOfLastWarning){
-    console.log('timeOfLastWarning', timeOfLastWarning)
-    console.log('TIME SINCE LAST WARNING:',((new Date() - new Date(timeOfLastWarning)) / 60000))
+    // console.log('timeOfLastWarning', timeOfLastWarning)
+    // console.log('TIME SINCE LAST WARNING:',((new Date() - new Date(timeOfLastWarning)) / 60000))
     if (warningTimeout == 0 || timeOfLastWarning == 0){
         return true;
     } else {
