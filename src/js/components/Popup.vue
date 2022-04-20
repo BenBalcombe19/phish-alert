@@ -116,14 +116,14 @@
         <div v-if="showAttachments" class="table link-table">
 
             <div class="row header sticky" :class="{ disabled: !extensionActive}">
-                <div class="cell">File Name</div>
+                <div class="cell value">File Name</div>
                 <!-- <div class="cell value">Type</div> -->
                 <div class="cell">Size</div>
                 <div class="cell">Risk Rating</div>
             </div>
 
             <div class="row" v-for="attachment in currentMailData.attachmentsRated" :key="attachment.attachment_id">
-                <div class="cell"><abbr :title="attachment.fileName" v-html="textHighlight(attachment.fileName, attachment.fileName.split('.').pop())"></abbr></div>
+                <div class="cell value"><abbr :title="attachment.fileName" v-html="textHighlight(attachment.fileName, attachment.fileName.split('.').pop())"></abbr></div>
                 <!-- <div class="cell value"><abbr :title="attachment.type">{{attachment.type}}</abbr></div> -->
                 <div class="cell">{{attachment.size}}</div>
                 <!-- <div class="cell">{{Math.ceil(attachment.size / 1000) + 'KB'}}</div> -->
@@ -165,7 +165,7 @@ export default {
             address:{
                 show: false,
                 title: 'Useful Tips',
-                data: ['Make sure you trust this email address before progressing any further', 'If this is from an organisation or business, make sure the domain is spelled correctly as often attackers will try and trick users e.g no-reply@goggle.com',
+                data: ['Make sure you trust this email address before progressing any further.', 'If this is from an organisation or business, make sure the domain is spelled correctly as often attackers will try and trick users e.g no-reply@goggle.com.',
                 'An email from a nonsensical address (for example, 535vukasimeru@gmail.com) is almost certainly something you shouldn\'t open.']
             },
             name:{
@@ -182,14 +182,15 @@ export default {
             linkInfo:{
                 show: false,
                 title: 'Link Information',
-                data:['Link Text - This is the text of the link displayed to the user e.g "Click Here"','Link URL - This is the actual URL that you will be directed to when you click the link text e.g "https://google.com"',
-                    'Domain Match - This refers to whether the domain of the Link URL (Highlighted in Blue) matches the domain of the sender address e.g no-reply@google.com, the domain is google.com']
+                data:['Link Text - This is the text of the link displayed to the user e.g "Click Here".','Link URL - This is the actual URL that you will be directed to when you click the link text e.g "https://google.com".',
+                    'Domain Match - This refers to whether the domain of the Link URL (Highlighted in Blue) matches the domain of the sender address e.g no-reply@google.com, the domain is google.com.',
+                    'Make sure you double check the spelling of the domain of the url is correct. "The mind sees what it wants to see" and attackers will try and fool you with slight tweaks to legitimate domains.']
             },
             attachmentInfo:{
                 show: false,
                 title: 'Attachment Information',
                 data:['Unfortunately, there are many attachments file extensions that could potentially run code on your computer and thus install malware. e.g .exe, .src, .doc, .xls... ',
-                'Often, dangerous file extensions are concealed in .zip files','In addition, cybercriminals like to hide malicious links in PDF']
+                'Often, dangerous file extensions are concealed in .zip files','In addition, cybercriminals like to hide malicious links in PDF or .doc files.']
             },
             icons: {
                 active: 'icons/icon-48x48.png',
@@ -225,13 +226,10 @@ export default {
     watch : {
         currentMailData: {
             handler(newVal){
-                console.log('WATCHER: currentMailData changed', newVal)
                 if (Object.keys(newVal).length != 0){
                     this.isData = true;
-                    console.log('object is not empty')
                 } else {
                     this.isData = false;
-                    console.log('object is empty')
                 }
             },
             deep: true
@@ -268,15 +266,24 @@ export default {
     },
     
     mounted(){
-        chrome.runtime.sendMessage({sender:'popup',type: 'mounted'});
         this.getData();
-        chrome.runtime.onMessage.addListener((msg, sender, response) => {
-            if (msg.sender === 'background-script'){
-                if (msg.type === 'data-update'){
+        // chrome.runtime.sendMessage({sender:'popup',type: 'mounted'});
+        // chrome.runtime.onMessage.addListener((msg, sender, response) => {
+        //     if (msg.sender === 'content-script'){
+        //         if (msg.type === 'data-update'){
+        //             this.getData();
+        //         }
+        //     }
+        // })
+
+
+        chrome.storage.onChanged.addListener(function (changes) {
+            for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+                if (key == 'emailData'){
                     this.getData();
                 }
             }
-        })
+        });
 
         chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
             let url = tabs[0].url;
@@ -284,15 +291,13 @@ export default {
                 let domain = parser.parse_host(url, {allowUnknownTLD : true}).domain;
                 if (!domain.includes('google.com/mail')){
                     this.isGmail = false
-                    // setTimeout(() => {
-                    // },300)
                 } else {
                     this.isGmail = true;
                 }
-                } catch{
-                    console.log('Tab URL failed')
-                    return false;
-                }
+            } catch{
+                console.log('Tab URL failed')
+                return false;
+            }
         });
     },
 }
