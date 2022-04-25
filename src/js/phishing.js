@@ -230,7 +230,8 @@ class Phishing {
 
     _fileTypeRating(fileName){
         let safeAttachments = ['gif','jpg','jpeg','png','tif','tiff','mpg','mpeg','mp3','wav']
-        let somewhatSafeAttachments = ['doc','pdf','pptx','xls','txt','docx','xlsx','xlsm',]
+        let somewhatSafeAttachments = ['doc','pdf','pptx','xls','txt','docx','xlsx','xlsm']
+        let notSafeAttachments = ['exe','zip','rar']
 
         if (typeof fileName != 'undefined'){
             let extension = fileName.split('.').pop().toLowerCase();
@@ -239,8 +240,11 @@ class Phishing {
                 return 1;
             } else if (somewhatSafeAttachments.includes(extension)){
                 return 2;
+            }
+            else if (notSafeAttachments.includes(extension)){
+                return 5;
             } else {
-                return Math.round(Math.random() * (5 - 4) + 4);
+                return 4;
             }
         }
         return 3;
