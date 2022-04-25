@@ -19,19 +19,19 @@ window.addEventListener('warning-given', function(event){
 
 }, false)
 
+
+
+
 // Listen for the get settings data event from extension.js and retrieve the data keys from chrome local storage
 // This is run when the extension is loaded
 window.addEventListener('get-settings-data', function(event){
-    // sendMessage('content-script','get-settings-data', false, function(response){
-    //     window.dispatchEvent(new CustomEvent("settings-retrieved", { detail: response.settingsData }));
-    // })
-
     getData(['extensionActive','warningActive','warningThreshold','warningTimeout','timeOfLastWarning']).then((settingsData)=>{
         window.dispatchEvent(new CustomEvent("settings-retrieved", { detail: settingsData }));
     })
-
-
 }, false)
+
+
+
 
 // Whilst the get-settings-data event is fired at the injection of the script, this listener acts on anytime the settings
 // data is updated and appropriately updates the data in the injected script
