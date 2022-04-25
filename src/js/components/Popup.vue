@@ -165,7 +165,7 @@ export default {
             address:{
                 show: false,
                 title: 'Useful Tips',
-                data: ['Make sure you trust this email address before progressing any further.', 'If this is from an organisation or business, make sure the domain is spelled correctly as often attackers will try and trick users e.g no-reply@goggle.com.',
+                data: ['Make sure you trust this email address before progressing any further.', 'If this is from an organisation or business, make sure the domain is spelled correctly as often attackers will try and trick users e.g no-reply@goggle.com',
                 'An email from a nonsensical address (for example, 535vukasimeru@gmail.com) is almost certainly something you shouldn\'t open.']
             },
             name:{
