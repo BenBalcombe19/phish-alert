@@ -1,6 +1,6 @@
 <template>
     <div class="info-container" :class="{ 'expanded': show, 'table-title-info': !inTable}">
-        <div class="info-title">{{title}} <i class="fa-solid fa-circle-question"></i></div>
+        <div class="info-title">{{title}} <i class="fa-solid fa-circle-info"></i></div>
         <ul class="info-list">
             <li v-for="point in data" :key="point.id">
                 {{point}}

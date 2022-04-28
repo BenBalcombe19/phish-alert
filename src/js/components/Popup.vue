@@ -3,9 +3,10 @@
         <!-- <div v-if="!loaded" class="loading"> loading...</div> -->
         <div v-if="!isGmail" class="title-no-email">Gmail not detected...</div>
 
-        <div v-else-if="isData && extensionActive" class="title-email">
+        <div v-else-if="isData && extensionActive" class="title-email" @click="settingsInfoMechanic('ratingInfo')">
             <div class=title-email-text>Email Rating:</div>
             <rating v-if="isData" :riskValue="currentMailData.overallRating"></rating>
+            <i class="rating-info-button fa-solid fa-circle-info"></i>
         </div>
         
         <div v-else class="title-no-email">Sorry, no email found</div>
@@ -16,7 +17,7 @@
             
             <i class="menu-button fa-solid fa-gear" @click="settingsInfoMechanic('settings')"></i>
 
-            <i class="menu-button fa-solid fa-circle-question" @click="settingsInfoMechanic('mainInfo')"></i>
+            <i class="menu-button fa-solid fa-circle-info" @click="settingsInfoMechanic('mainInfo')"></i>
 
             <label class="switch">
                 <input type="checkbox" v-model="extensionActive">
@@ -29,7 +30,7 @@
         </span>
 
         <info :show="mainInfo.show" :title="mainInfo.title" :data="mainInfo.data" :inTable="false" @close-popup="mainInfo.show = false"></info>
-        
+        <info :show="ratingInfo.show" :title="ratingInfo.title" :data="ratingInfo.data" :inTable="false" @close-popup="ratingInfo.show = false"></info>
         <!-- EMAIL DETAILS TABLE -->
         <div v-if="showEmailDetails" class="table-title">General Details:</div>
         <div v-if="showEmailDetails" class="table">
@@ -83,7 +84,7 @@
         </div>
         <info :show="linkInfo.show" :title="linkInfo.title" :data="linkInfo.data" :inTable="false" @close-popup="linkInfo.show = false"></info>
 
-        <div v-if="showLinks" class="table link-table">
+        <div v-if="showLinks" class="table dynamic-table" @click="linkInfo.show = ! linkInfo.show">
 
             <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell">Link Text</div>
@@ -113,7 +114,7 @@
         </div>
         <info :show="attachmentInfo.show" :title="attachmentInfo.title" :data="attachmentInfo.data" :inTable="false" @close-popup="attachmentInfo.show = false"></info>
 
-        <div v-if="showAttachments" class="table link-table">
+        <div v-if="showAttachments" class="table dynamic-table" @click="attachmentInfo.show = ! attachmentInfo.show">
 
             <div class="row header sticky" :class="{ disabled: !extensionActive}">
                 <div class="cell value">File Name</div>
@@ -157,6 +158,11 @@ export default {
                 title: 'General Information',
                 data:['The purpose of this extension is to educate and spread awareness on the identification of phishing emails and where possible, provide warning to users of potential phishing attempts.',
                 'Phishing is a social engineering technique used by cyber criminals to steal personal and usually valuable information from victims by pretending to be a trusted organisation.']
+            },
+            ratingInfo:{
+                show: false,
+                title: 'Rating Information',
+                data:['The rating\s given in this extension are in the range of 1 to 5.', '1 signals completely safe, nothing to worry about.', '5 signals take extreme caution and to be sure of the emails credibility before acting on it.']
             },
             settings:{
                 show: false,
@@ -213,12 +219,15 @@ export default {
         subjectRating(){
             return this.isData ? this.currentMailData.riskRatings.subject : 'No Information Found';
         },
+        // Show email details if email data is loaded, the extension is activea and gmail is detected
         showEmailDetails(){
             return this.isData && this.extensionActive && this.isGmail;
         },
+        // Show links table if email data is loaded, the extension is active, gmail is detected and there are links in the email
         showLinks(){
             return this.isData && this.extensionActive && this.isGmail && this.currentMailData.links.length != 0;
         },
+        // Show attachments table if email data is loaded, the extension is active, gmail is detected and there are attachments in the email
         showAttachments(){
             return this.isData && this.extensionActive && this.isGmail && this.currentMailData.attachmentsRated.length != 0;
         },
@@ -258,9 +267,15 @@ export default {
             if (element == 'settings'){
                 this.settings.show = !this.settings.show;
                 this.mainInfo.show = false;
+                this.ratingInfo.show = false;
             } else if (element == 'mainInfo'){
                 this.mainInfo.show = !this.mainInfo.show;
                 this.settings.show = false;
+                this.ratingInfo.show = false;
+            } else if (element == 'ratingInfo'){
+                this.ratingInfo.show = !this.ratingInfo.show;
+                this.settings.show = false;
+                this.mainInfo.show = false;
             }
         }
     },

@@ -24,6 +24,7 @@ body {
 
     .title-email {
         display: flex;
+        align-items: center;
         position: absolute;
         top: 0;
         left: 14px;
@@ -39,9 +40,19 @@ body {
         border-radius: 5px;
         box-shadow: 0 0 2px #000;
 
+        cursor: pointer;
+
         .title-email-text{
             font-weight: bold;
             margin-right: 10px;
+        }
+
+        .rating-info-button{
+            margin-left: 10px;
+            
+            color: #888;
+
+            font-size: 17px;
         }
     }
 
@@ -213,9 +224,10 @@ body {
 
         box-shadow: 0 0 1px;
 
-        &.link-table{
+        &.dynamic-table{
             max-height: 200px;
             overflow-y: scroll;
+
         }
         .row{
             display: flex;
