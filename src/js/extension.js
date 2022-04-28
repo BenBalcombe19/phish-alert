@@ -68,9 +68,9 @@ function startExtension(gmail) {
                         if (warningTimerElapsed(settings.warningTimeout, settings.timeOfLastWarning)){
                             if (!validRatings(settings.warningThreshold, emailData.riskRatings,emailData.links, emailData.attachmentsRated)){
                                 let dateNow = new Date();
-                                window.dispatchEvent(new CustomEvent("warning-given", { detail: dateNow })); // Set the time of last warning to local storage for anytime the script is reloaded
+                                window.dispatchEvent(new CustomEvent("warning-given", { detail: dateNow.toJSON() })); // Set the time of last warning to local storage for anytime the script is reloaded
                                 settings.timeOfLastWarning = dateNow; // Set time of last warning to now for the current content script
-
+                                
                                 gmail.tools.add_modal_window('Potential phishing attempt', 'Do you wish to continue?', () => {
                                     gmail.tools.remove_modal_window();
                                 }, () => {
@@ -123,6 +123,9 @@ function warningTimerElapsed(warningTimeout, timeOfLastWarning){
     if (warningTimeout == 0 || timeOfLastWarning == 0){
         return true;
     } else {
+        if (timeOfLastWarning != 0){
+            timeOfLastWarning = new Date(timeOfLastWarning)
+        }
         if (Math.floor(((new Date() - new Date(timeOfLastWarning)) / 60000)) > warningTimeout){
             return true;
         }
