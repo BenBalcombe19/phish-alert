@@ -18,7 +18,7 @@ window.addEventListener('warning-given', function(event){
 // Listen for the get settings data event from extension.js and retrieve the data keys from chrome local storage
 // This is run when the extension is loaded
 window.addEventListener('get-settings-data', function(event){
-    getData(['extensionActive','warningActive','warningThreshold','warningTimeout','timeOfLastWarning']).then((settingsData)=>{
+    getData(['extensionActive','warningActive','warningThreshold','warningTimeout','timeOfLastWarning','blockedList']).then((settingsData)=>{
         window.dispatchEvent(new CustomEvent("settings-retrieved", { detail: settingsData }));
     })
 }, false)
@@ -27,13 +27,31 @@ window.addEventListener('get-settings-data', function(event){
 // data is updated and appropriately updates the data in the injected script
 chrome.storage.onChanged.addListener(function (changes) {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-        if (key == 'warningActive' || key == 'warningThreshold' || key == 'warningTimeout' || key == 'extensionActive'){
-            getData(['extensionActive','warningActive','warningThreshold','warningTimeout','timeOfLastWarning']).then((settingsData)=>{
+        if (key == 'warningActive' || key == 'warningThreshold' || key == 'warningTimeout' || key == 'extensionActive' || key == 'blockedList'){
+            getData(['extensionActive','warningActive','warningThreshold','warningTimeout','timeOfLastWarning','blockedList']).then((settingsData)=>{
                 window.dispatchEvent(new CustomEvent("settings-retrieved", { detail: settingsData }));
             });
         }
     }
 });
+
+// Listen for the address-block-toggled event and add or remove the given address from the blocked list
+window.addEventListener('address-block-toggled', function(event){
+    getData(['blockedList']).then((dataObject) => {
+        if (dataObject.blockedList.includes(event.detail)){
+            for (let i = 0; i <= dataObject.blockedList.length; i++){
+                if (dataObject.blockedList[i] === event.detail){
+                    dataObject.blockedList.splice(i,1);
+                }
+            }
+            updateData('blockedList',dataObject.blockedList)
+        } else {
+            dataObject.blockedList.push(event.detail)
+            updateData('blockedList',dataObject.blockedList)
+        }
+    })
+
+}, false)
 
 // Helper function to set data from the chrome.storage API
 function updateData(key, data, updateData) {

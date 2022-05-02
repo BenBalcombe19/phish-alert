@@ -6,6 +6,7 @@ chrome.runtime.onInstalled.addListener(function () {
         warningActive: true,
         warningThreshold: 5,
         warningTimeout: 5,
-        timeOfLastWarning: 0
+        timeOfLastWarning: 0,
+        blockedList: []
     }, function () { });
 });
