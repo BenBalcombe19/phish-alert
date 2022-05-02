@@ -17,7 +17,7 @@ First get the code and build it:
 git clone https://github.com/BenBalcombe19/phish-alert
 
 # Navigate to the directory
-cd gmailjs-node-boilerplate
+cd phish-alert
 
 # ensure you're running latest version of node!
 npm update
