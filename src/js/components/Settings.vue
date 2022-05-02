@@ -83,23 +83,19 @@ export default {
             });
         },
     },
-
-    computed: {
-
-    },
-    
     methods: {
+        // Emit close-popup event for Popup.vue to handle
         close(){
             this.$emit('close-popup')
         }
     },
     mounted(){
+        // Get the warning settings data from the chrome.storage API
         chrome.storage.local.get(['warningActive','warningThreshold','warningTimeout'], (data) => {
             this.warningActive = data.warningActive;
             this.warningThreshold = data.warningThreshold;
             this.warningTimeout = data.warningTimeout;
         }); 
     },
-
 }
 </script>

@@ -1,14 +1,18 @@
 <template>
     <div class="popup-wrapper" :class="{ 'no-email-settings-open': (settings.show && (!isData || !extensionActive || !isGmail))}">
+        <!-- If gmail is not detected then give help message -->
         <div v-if="!isGmail" class="title-no-email">Open Gmail to use this extension :)</div>
 
+        <!-- Else if extension is active and data is loaded, display email rating -->
         <div v-else-if="isData && extensionActive" class="title-email" @mouseenter="toggleDropdown('ratingInfo')" @mouseleave="toggleDropdown('ratingInfo')">
             <div class=title-email-text>Email Rating:</div>
             <rating v-if="isData" :riskValue="currentMailData.overallRating"></rating>
         </div>
         
+        <!-- Else display no email found message -->
         <div v-else class="title-no-email">Sorry, no email found</div>
         
+        <!-- top right settings/options panel -->
         <span class="options-wrapper">
             <settings :show="settings.show" :title="settings.title" @close-popup="settings.show = false"></settings>
             
@@ -29,8 +33,11 @@
             
         </span>
 
+        <!-- MAIN INFO dropdown -->
         <info :show="mainInfo.show" :title="mainInfo.title" :data="mainInfo.data" :inTable="false" @close-popup="toggleDropdown('mainInfo')"></info>
+        <!-- RATING INFO dropdown -->
         <info :show="ratingInfo.show" :title="ratingInfo.title" :data="ratingInfo.data" :inTable="false" @close-popup="toggleDropdown('ratingInfo')"></info>
+        <!-- BLOCKED LIST dropdown -->
         <block v-if="showEmailDetails" :title="blockedList.title" :show="blockedList.show" :address="currentMailData.from.address" @new-blocked-value="toggleBlocked" @close-dropdown="toggleDropdown('blockedList')"></block>
        
         <!-- EMAIL DETAILS TABLE -->
@@ -88,7 +95,7 @@
 
         <div v-if="showLinks" class="table dynamic-table" @click="linkInfo.show = ! linkInfo.show">
 
-            <div class="row header sticky" :class="{ disabled: !extensionActive}">
+            <div class="row header" :class="{ disabled: !extensionActive}">
                 <div class="cell">Link Text</div>
                 <div class="cell value">Link URL</div>
                 <div class="cell">Domain Match</div>
@@ -114,22 +121,20 @@
                 Learn More <i class="fa-solid fa-circle-info"></i>
             </span>
         </div>
+
         <info :show="attachmentInfo.show" :title="attachmentInfo.title" :data="attachmentInfo.data" :inTable="false" @close-popup="attachmentInfo.show = false"></info>
 
         <div v-if="showAttachments" class="table dynamic-table" @click="attachmentInfo.show = ! attachmentInfo.show">
 
-            <div class="row header sticky" :class="{ disabled: !extensionActive}">
+            <div class="row header" :class="{ disabled: !extensionActive}">
                 <div class="cell value">File Name</div>
-                <!-- <div class="cell value">Type</div> -->
                 <div class="cell">Size</div>
                 <div class="cell">Risk Rating</div>
             </div>
 
             <div class="row" v-for="attachment in currentMailData.attachmentsRated" :key="attachment.attachment_id">
                 <div class="cell value"><abbr :title="attachment.fileName" v-html="textHighlight(attachment.fileName, attachment.fileName.split('.').pop())"></abbr></div>
-                <!-- <div class="cell value"><abbr :title="attachment.type">{{attachment.type}}</abbr></div> -->
                 <div class="cell">{{attachment.size}}</div>
-                <!-- <div class="cell">{{Math.ceil(attachment.size / 1000) + 'KB'}}</div> -->
                 <div class="cell">
                     <rating :riskValue="attachment.riskRating"></rating>
                 </div>
@@ -219,12 +224,15 @@ export default {
         block
     },
     computed: {
+        // Return risk rating for sender address if data is loaded
         fromAddressRating(){
             return this.isData ? this.currentMailData.riskRatings.address : 'No Information Found';
         },
+        // Return risk rating for sender name if data is loaded
         fromNameRating(){
             return this.isData ? this.currentMailData.riskRatings.name : 'No Information Found'; 
         },
+        // Return risk rating for email subject if data is loaded
         subjectRating(){
             return this.isData ? this.currentMailData.riskRatings.subject : 'No Information Found';
         },
@@ -273,15 +281,20 @@ export default {
         },
     },
     methods: {
+        //Function to get the required data from the chrome.storage API
         getData(){
             chrome.storage.local.get(['emailData','extensionActive'], (data) => {
                 this.currentMailData = data.emailData;
                 this.extensionActive = data.extensionActive;
             });    
         },
+        // Function to highlight the parts of a string used for highlighting the domain in a URL
         textHighlight(mainText,highlightText){
             return mainText.replace(highlightText, '<span class="text-highlight">' + highlightText + '</span>')
         },
+
+        // Function to toggle the dropdown at the top of the popup so user isn't overwhelmed with drop downs
+        // Closes all other dropwowns when another is clicked
         toggleDropdown(toggleItem){
             let elements = ['settings','mainInfo','ratingInfo','blockedList'];
 
@@ -293,6 +306,8 @@ export default {
                 }
             })
         },
+        // Function to toggle whether the sender address is blocked and takes value from child component Block.vue
+        // when it emits a change in value
         toggleBlocked(value){
             this.blocked = value;
         }
@@ -300,16 +315,8 @@ export default {
     
     mounted(){
         this.getData();
-        // chrome.runtime.sendMessage({sender:'popup',type: 'mounted'});
-        // chrome.runtime.onMessage.addListener((msg, sender, response) => {
-        //     if (msg.sender === 'content-script'){
-        //         if (msg.type === 'data-update'){
-        //             this.getData();
-        //         }
-        //     }
-        // })
 
-
+        // Setup listener to watch values stored in chrome.storage API and act accordingly
         chrome.storage.onChanged.addListener(function (changes) {
             for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
                 if (key == 'emailData'){
@@ -318,6 +325,7 @@ export default {
             }
         });
 
+        // Check whether the current tab is gmail to determine what information should be displayed in popup
         chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
             let url = tabs[0].url;
             try {

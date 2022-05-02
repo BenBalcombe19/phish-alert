@@ -50,6 +50,7 @@ export default {
     },
     
     methods: {
+        // Function to determine which style class should be applied to the rating for colour coordination
         riskClass(id){
             if (this.riskValue != false){
                 if (id <= this.riskValue){
@@ -60,16 +61,5 @@ export default {
             }
         }
     },
-    
-    beforeMount() {
-    },
-    created(){
-    },
-    mounted(){
-    },
-    beforeDestroy(){
-    },
-    destroyed(){
-    }
 }
 </script>
