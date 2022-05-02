@@ -1,24 +1,24 @@
 <template>
     <div class="popup-wrapper" :class="{ 'no-email-settings-open': (settings.show && (!isData || !extensionActive || !isGmail))}">
-        <!-- <div v-if="!loaded" class="loading"> loading...</div> -->
-        <div v-if="!isGmail" class="title-no-email">Gmail not detected...</div>
+        <div v-if="!isGmail" class="title-no-email">Open Gmail to use this extension :)</div>
 
-        <div v-else-if="isData && extensionActive" class="title-email" @click="settingsInfoMechanic('ratingInfo')">
+        <div v-else-if="isData && extensionActive" class="title-email" @mouseenter="toggleDropdown('ratingInfo')" @mouseleave="toggleDropdown('ratingInfo')">
             <div class=title-email-text>Email Rating:</div>
             <rating v-if="isData" :riskValue="currentMailData.overallRating"></rating>
-            <i class="rating-info-button fa-solid fa-circle-info"></i>
         </div>
         
         <div v-else class="title-no-email">Sorry, no email found</div>
-
         
         <span class="options-wrapper">
             <settings :show="settings.show" :title="settings.title" @close-popup="settings.show = false"></settings>
             
-            <i class="menu-button fa-solid fa-gear" @click="settingsInfoMechanic('settings')"></i>
+            <i title="Settings" class="menu-button fa-solid fa-gear" @click="toggleDropdown('settings')"></i>
 
-            <i class="menu-button fa-solid fa-circle-info" @click="settingsInfoMechanic('mainInfo')"></i>
-
+            <i title="Block emails from this sender" class="menu-button fa-solid fa-user-shield" :style="{'color':blockedColor}" @click="toggleDropdown('blockedList')"></i>
+            
+            <i title="Extension Information" class="menu-button fa-solid fa-circle-info" @click="toggleDropdown('mainInfo')"></i>
+            
+            
             <label class="switch">
                 <input type="checkbox" v-model="extensionActive">
                 <div class="slider round">
@@ -29,8 +29,10 @@
             
         </span>
 
-        <info :show="mainInfo.show" :title="mainInfo.title" :data="mainInfo.data" :inTable="false" @close-popup="mainInfo.show = false"></info>
-        <info :show="ratingInfo.show" :title="ratingInfo.title" :data="ratingInfo.data" :inTable="false" @close-popup="ratingInfo.show = false"></info>
+        <info :show="mainInfo.show" :title="mainInfo.title" :data="mainInfo.data" :inTable="false" @close-popup="toggleDropdown('mainInfo')"></info>
+        <info :show="ratingInfo.show" :title="ratingInfo.title" :data="ratingInfo.data" :inTable="false" @close-popup="toggleDropdown('ratingInfo')"></info>
+        <block v-if="showEmailDetails" :title="blockedList.title" :show="blockedList.show" :address="currentMailData.from.address" @new-blocked-value="toggleBlocked" @close-dropdown="toggleDropdown('blockedList')"></block>
+       
         <!-- EMAIL DETAILS TABLE -->
         <div v-if="showEmailDetails" class="table-title">General Details:</div>
         <div v-if="showEmailDetails" class="table">
@@ -142,6 +144,7 @@
 import rating from './Rating.vue';
 import info from './Info.vue';
 import settings from './Settings.vue';
+import block from './Block.vue';
 const parser = require('tld-extract');
 
 
@@ -153,6 +156,7 @@ export default {
             isData: false,
             isGmail: false,
             loaded: false,
+            blocked: false,
             mainInfo:{
                 show: false,
                 title: 'General Information',
@@ -162,11 +166,15 @@ export default {
             ratingInfo:{
                 show: false,
                 title: 'Rating Information',
-                data:['The rating\s given in this extension are in the range of 1 to 5.', '1 signals completely safe, nothing to worry about.', '5 signals take extreme caution and to be sure of the emails credibility before acting on it.']
+                data:['The rating\s given in this extension are in the range of 1 to 5.', '1 signals completely safe, nothing to worry about.', '5 signals take extreme caution and be sure of the emails credibility before acting on it.']
             },
             settings:{
                 show: false,
                 title: 'Settings',
+            },
+            blockedList:{
+                show: false,
+                title: 'Blocked Addresses',
             },
             address:{
                 show: false,
@@ -207,7 +215,8 @@ export default {
     components: {
         rating,
         info,
-        settings
+        settings,
+        block
     },
     computed: {
         fromAddressRating(){
@@ -231,6 +240,17 @@ export default {
         showAttachments(){
             return this.isData && this.extensionActive && this.isGmail && this.currentMailData.attachmentsRated.length != 0;
         },
+        blockedColor(){
+            if (this.extensionActive && this.isGmail){
+                if (this.blocked){
+                    return '#ca2222';
+                } else {
+                    return '#1aa260';
+                }
+            } else {
+                return '#888'
+            }
+        }
     },
     watch : {
         currentMailData: {
@@ -257,26 +277,24 @@ export default {
             chrome.storage.local.get(['emailData','extensionActive'], (data) => {
                 this.currentMailData = data.emailData;
                 this.extensionActive = data.extensionActive;
-                this.loaded
             });    
         },
         textHighlight(mainText,highlightText){
             return mainText.replace(highlightText, '<span class="text-highlight">' + highlightText + '</span>')
         },
-        settingsInfoMechanic(element){
-            if (element == 'settings'){
-                this.settings.show = !this.settings.show;
-                this.mainInfo.show = false;
-                this.ratingInfo.show = false;
-            } else if (element == 'mainInfo'){
-                this.mainInfo.show = !this.mainInfo.show;
-                this.settings.show = false;
-                this.ratingInfo.show = false;
-            } else if (element == 'ratingInfo'){
-                this.ratingInfo.show = !this.ratingInfo.show;
-                this.settings.show = false;
-                this.mainInfo.show = false;
-            }
+        toggleDropdown(toggleItem){
+            let elements = ['settings','mainInfo','ratingInfo','blockedList'];
+
+            elements.forEach(element => {
+                if (element == toggleItem){
+                    this[element].show = !this[element].show;
+                } else {
+                    this[element].show = false;
+                }
+            })
+        },
+        toggleBlocked(value){
+            this.blocked = value;
         }
     },
     

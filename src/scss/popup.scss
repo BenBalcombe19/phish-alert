@@ -40,20 +40,18 @@ body {
         border-radius: 5px;
         box-shadow: 0 0 2px #000;
 
-        cursor: pointer;
-
         .title-email-text{
             font-weight: bold;
             margin-right: 10px;
         }
 
-        .rating-info-button{
-            margin-left: 10px;
+        // .rating-info-button{
+        //     margin-left: 10px;
             
-            color: #888;
+        //     color: #888;
 
-            font-size: 17px;
-        }
+        //     font-size: 17px;
+        // }
     }
 
     .title-no-email{
@@ -68,6 +66,18 @@ body {
         font-size: 24px;
         font-weight: bold;
     }
+
+    .block-button-wrapper{
+        align-self: flex-start;
+
+        padding: 10px;
+
+        background-color: #eee;
+
+        border-radius: 5px;
+        box-shadow: 0 0 2px #000;
+    }
+    
 
     .options-wrapper{
         display: flex;
@@ -174,20 +184,20 @@ body {
         }
 
 
-          .menu-button{
-            color: #888;
+        .menu-button{
+        color: #888;
 
-            margin-right: 10px;
-            max-height: 32px;
+        margin-right: 10px;
+        max-height: 32px;
 
-            font-size: 31px;
-    
-            cursor: pointer;
+        font-size: 31px;
 
-            &:hover{
-                color: lighten(#888, 10%);
-            }
-          }
+        cursor: pointer;
+
+        &:hover{
+            color: lighten(#888, 10%);
+        }
+        }
     }
  
     .table-title{
@@ -320,3 +330,4 @@ body {
 @import 'rating';
 @import 'info';
 @import 'settings';
+@import 'block';
