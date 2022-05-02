@@ -21,6 +21,7 @@ riskModal.style.marginRight = "5px";
 riskModal.style.color = "#fff";
 riskModal.style.fontSize = "11px";
 riskModal.style.borderRadius = "3px";
+riskModal.style.cursor = "default";
 
 // The button to block the current sender displayed at top of email
 const blockButton = document.createElement("div");
