@@ -14,7 +14,7 @@ First get the code and build it:
 
 ```
 # Get code
-git clone https://github.com/
+git clone https://github.com/BenBalcombe19/phish-alert
 
 # Navigate to the directory
 cd gmailjs-node-boilerplate
