@@ -2,7 +2,7 @@
     "name": "Phish Alert",
     "description": "A cyber security awareness, educator and monitoring chrome extension for Gmail to provide that extra layer of assurance.",
     "manifest_version": 3,
-    "version": "1.0.0",
+    "version": "1.1.0",
     "permissions": [
         "storage"
     ],
