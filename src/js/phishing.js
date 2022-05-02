@@ -1,5 +1,4 @@
 var Sentiment = require('sentiment');
-var sentiment = new Sentiment();
 const emojiTree = require('emoji-tree');
 const parser = require('tld-extract');
 
@@ -16,6 +15,8 @@ class Phishing {
         this.specialCharacterRegex = new RegExp('[!#$+:;%^&*(){}|<>\-]');
     }
 
+    // Function to calculate overall risk rating of the email which averages the risks from the sender's name,
+    // sender' address, subject, each link and each attachment returning a value between 1 and 5
     calculateOverallRating(){
         let elementCounter = 0;
         let riskTotal = 0;
@@ -42,10 +43,8 @@ class Phishing {
         this.overallRating = Math.ceil(riskTotal / elementCounter)
     }
 
-    validateAddress(address){
-
-    }
-
+    // Function to calculate the risk of the sender's name
+    // Checks for emojis and special characters
     validateName(fromName){
         let containsSpecialCharacter = this.specialCharacterRegex.test(fromName);
         let emojiCount = this._emojiCount(fromName);
@@ -59,6 +58,8 @@ class Phishing {
         }
     }
     
+    // Function to calculate the risk of the email's subject
+    // Checks for the user's username, special characters, urgent sentiment and emojis
     validateSubject(subject, userEmail){
         let urgencyCounter = 0;
         let urgencyWords = ["now","hurry","quick","limited","urgent","urgently","important",'required'];
@@ -66,13 +67,18 @@ class Phishing {
         let containsSpecialCharacter = this.specialCharacterRegex.test(subject);
         let username = userEmail.split('@')[0];
         
+        // Calculate how many urgent words are contained in the subject string
         tokenisedSubject.forEach(word => {
             if (urgencyWords.includes(word)){
                 urgencyCounter++;
             }
         });
     
-        if (containsSpecialCharacter){
+        if(subject.includes(username)){
+            this.riskRatings.subject = 5;
+        } else if (this._emojiCount(subject) > 1){
+            this.riskRatings.subject = 4;
+        } else if (containsSpecialCharacter){
             if (urgencyCounter < 2){
                 this.riskRatings.subject = 4;
             }  else {
@@ -86,30 +92,27 @@ class Phishing {
             } else {
                 this.riskRatings.subject = 5;
             }
-        } else if(subject.includes(username)){
-            this.riskRatings.subject = 5;
-        } else if (this._emojiCount(subject) > 1){
-            this.riskRatings.subject = 4;
         }
-        // var result = sentiment.analyze(subject);
-        // console.log("Sentiment result:",result);
     }
     
+    // Function to calculate the risk of the email's links contained in the body
     validateBody(body, senderAddress){
         let AnchorTagArray = this._getAnchorTags(body);
 
+        // Loop through each anchorTag in the DOM 
         AnchorTagArray.forEach(anchorTag => {
-            let isValidHost,isLinkTextDisparity,isSenderDomainDisparity;
+            let isHostIP,isLinkTextDisparity,isSenderDomainDisparity;
             let riskRating = 1;
 
             // Loop through all links that contain link text and a href attribute
             if (anchorTag.innerText.trim().length != 0 && anchorTag.href.trim().length != 0 && !anchorTag.href.includes('mailto')){
 
-                isValidHost = this._isValidHost(anchorTag.hostname)
+                isHostIP = this._isIPAddress(anchorTag.hostname)
                 isLinkTextDisparity = this._isLinkTextDisparity(anchorTag.href, anchorTag.innerText)
                 isSenderDomainDisparity = this._isSenderDomainDisparity(senderAddress, anchorTag.hostname)
-                riskRating = this._calculateLinkRating(isSenderDomainDisparity,isLinkTextDisparity, isValidHost)
+                riskRating = this._calculateLinkRating(isSenderDomainDisparity,isLinkTextDisparity, isHostIP)
 
+                // Push a link object for each link to an array to be passed to the front end
                 this.linkArray.push({
                     href: anchorTag.href,
                     hostname: anchorTag.hostname,
@@ -118,12 +121,12 @@ class Phishing {
                     senderDomainDisparity: isSenderDomainDisparity
                 })
             }
-        })
-        
-        // return this.linkArray
+        })        
     }
 
+    // Function to calculate the risk of the email's attachments
     validateAttachments(attachments){
+        // Loop through each attachment and push an attachment object to an array to be passed to the front end
         attachments.forEach(attachment => {
             this.attachmentArray.push({
                 fileName: attachment.name,
@@ -132,14 +135,13 @@ class Phishing {
                 riskRating: this._fileTypeRating(attachment.name)
             })
         })
-        
-        // return this.attachmentArray
     }
     
     //************************************************//
     ////// NAME/SUBJECT EVALUATION HELPER METHODS //////
     //************************************************//
 
+    // Internal emoji counter function
     _emojiCount(string){
         let emojiCount = 0;
         for (let character of emojiTree(string)){
@@ -158,7 +160,6 @@ class Phishing {
     _getAnchorTags(htmlString){
         // Create dummy DOM element so that getElementsByTagName() 
         // can be used to scrape all anchor tags into HTML Collection
-
         let el = document.createElement( 'html' );
         el.innerHTML = htmlString;
 
@@ -166,11 +167,11 @@ class Phishing {
     }
 
     // Returns true if domain is an ip address
-    _isValidHost(domain){
+    _isIPAddress(domain){
         let regex = new RegExp('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$');
         let isIPAddress = regex.test(domain);
 
-        return isIPAddress ? false : true; // If link domain is an ipAddress then return 5 as risk rating, else 1   
+        return isIPAddress ? true : false;   
     }
 
     // Returns true if the link text is a url and does not match the href of the link
@@ -213,9 +214,9 @@ class Phishing {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    // Returns risk rating
-    _calculateLinkRating(isSenderDomainDisparity, isLinkTextDisparity, isValidHost){
-        if (isLinkTextDisparity || !isValidHost){
+    // Returns risk rating for the link passed in based off three factors
+    _calculateLinkRating(isSenderDomainDisparity, isLinkTextDisparity, isHostIP){
+        if (isLinkTextDisparity || isHostIP){
             return 5;
         } else if (isSenderDomainDisparity){
             return 4;
@@ -228,6 +229,7 @@ class Phishing {
     /////// ATTACHMENT EVALUATION HELPER METHODS ///////
     //************************************************//
 
+    // Returns risk rating of attachment based off of file extension
     _fileTypeRating(fileName){
         let safeAttachments = ['gif','jpg','jpeg','png','tif','tiff','mpg','mpeg','mp3','wav']
         let somewhatSafeAttachments = ['doc','pdf','pptx','xls','txt','docx','xlsx','xlsm']
